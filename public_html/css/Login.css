@@ -1,0 +1,171 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : 17 nov 2025, 21:12:37
+    Author     : Usuario
+*/
+/* =========================================
+   RESET Y VARIABLES
+   ========================================= */
+:root {
+    --color-primary: #00cccc;       /* Turquesa */
+    --color-primary-hover: #008b8b; /* Turquesa oscuro */
+    --color-bg: #f8f9fa;
+    --color-text: #333;
+    --border-radius: 5px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* =========================================
+   LAYOUT PRINCIPAL
+   ========================================= */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.main-content {
+    flex: 1; /* Empuja el footer hacia abajo */
+    display: flex;
+    align-items: center;     /* Centrado Vertical */
+    justify-content: center; /* Centrado Horizontal */
+    
+    /* IMAGEN DE FONDO */
+    /* Los .. suben un nivel para salir de 'css' y entrar en 'imgs' */
+    background-image: url('../imgs/fondoBilbao.jpg'); 
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+}
+
+/* =========================================
+   HEADER Y FOOTER
+   ========================================= */
+.header {
+    background: white;
+    padding: 15px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo-img {
+    height: 55px;
+    width: auto; 
+}
+
+.footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+
+/* =========================================
+   CAJA DE LOGIN (Diseño Vertical)
+   ========================================= */
+.login-box {
+    background: rgba(255, 255, 255, 0.95); /* Blanco con ligera transparencia */
+    padding: 40px;
+    width: 100%;
+    max-width: 400px; /* Estrecho como pide el boceto */
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.login-box h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* Formulario Vertical */
+#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+}
+
+.error-msg {
+    color: red;
+    font-size: 0.9em;
+    min-height: 20px;
+}
+
+/* =========================================
+   BOTONES
+   ========================================= */
+.btn {
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+}
+
+/* Botón "Volver" (Estilo secundario) */
+.btn-volver {
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    
+}
+
+.btn-volver:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+/* Botón "Aceptar" (Estilo primario) */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-hover);
+}

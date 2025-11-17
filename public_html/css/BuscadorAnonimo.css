@@ -7,150 +7,162 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     Author     : Usuario
 */
 /* --- Reseteo básico y variables --- */
+/* =========================================
+   1. RESET Y VARIABLES GLOBALES
+   ========================================= */
 :root {
-    --color-primary: #007bff;
-    --color-light: #f8f9fa;
-    --color-dark: #333;
+    --color-primary: #00cccc;       /* Tu color Turquesa */
+    --color-primary-hover: #008b8b;
+    --color-text: #333;
+    --color-bg-light: #f8f9fa;
     --border-radius: 5px;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    background-color: var(--color-light);
-    color: var(--color-dark);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--color-text);
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Asegura que el body ocupe al menos el 100% de la altura de la pantalla */
+    min-height: 100vh; /* Ocupa toda la altura de la pantalla */
 }
-main.container {
-    flex-grow: 1; 
-    width: 1800px;
-    /* --- FONDO DE IMAGEN --- */
-    /* 1. Ruta de la imagen: Tienes que salir de la carpeta 'css' (..) y entrar en 'img' */
-    background-image: url(../imgs/fondoBilbao.jpg); 
-    
-    /* 2. Propiedades para que la imagen se ajuste y se centre */
-    background-size: cover;          /* Asegura que la imagen cubra todo el contenedor */
-    background-position: center center; /* Centra la imagen */
-    background-repeat: no-repeat;    /* Evita que la imagen se repita */
 
-    /* 3. Estilos de contenedor (los que ya tenías) */
-    padding: 4rem; 
-    border-radius: var(--border-radius); 
-    margin-top: 2rem;
-    margin-bottom: 0rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+/* =========================================
+   2. ESTRUCTURA PRINCIPAL (Fondo y Centrado)
+   ========================================= */
+.main-content {
+    flex: 1; /* Empuja el footer hacia abajo */
+    display: flex;
+    align-items: center;     /* Centrado Vertical */
+    justify-content: center; /* Centrado Horizontal */
+    
+    /* IMAGEN DE FONDO (Ruta corregida para carpeta css) */
+    background-image: url('../imgs/fondoBilbao.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px; /* Espacio para móviles */
 }
 
 .container {
-    max-width: 1100px;
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 0px;
+    padding: 0 20px;
 }
 
-
-/* --- Encabezado (Header) --- */
+/* =========================================
+   3. HEADER Y FOOTER
+   ========================================= */
 .header {
-    background-color: #fff;
-    padding: 1rem 0;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    background: white;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 10; /* Para que quede por encima de la imagen */
 }
 
-.header .container {
+.header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.header-logo-img {
-    height: 60px; /* <-- Ajusta esta altura como prefieras */
-    width: auto;  /* Mantiene la proporción de la imagen */
-    display: block; /* Ayuda a alinearla correctamente en el flexbox */
-}
+.header-logo-img { height: 55px; width: auto; }
 
-/* --- Botones --- */
-.btn {
-    display: inline-block;
-    padding: 0.75rem 1.25rem;
-    font-size: 1rem;
-    text-decoration: none;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    background-color: #00cccc;
-    color: #fff;
-    transition: background-color 0.3s ease;
-}
-
-.btn:hover {
-    background-color: cadetblue;
-}
-
-.btn-login {
-    background-color: transparent;
-    border: 1px solid #00cccc;
-    color: #00cccc;
-}
-
-.btn-login:hover {
-    background-color: #00cccc;
-    color: #fff;
-}
-
-
-/* --- Formulario de Búsqueda --- */
-.search-section {
-    background-color: #fff;
-    padding: 2rem;
-    margin-top: 15rem;
-    border-radius: var(--border-radius);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.search-section h2 {
-    margin-bottom: 1.5rem;
+.footer {
+    background: #333;
+    color: white;
     text-align: center;
+    padding: 15px;
+    /* margin-top automático gracias a flex:1 en main-content */
 }
 
-.search-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr auto; /* 3 columnas: ciudad, fecha, botón */
-    gap: 1.5rem;
-    align-items: flex-end;
+/* =========================================
+   4. CAJAS DE CONTENIDO (Card System)
+   ========================================= */
+/* Estilo base para la caja blanca (común a Login y Buscador) */
+.card-box {
+    background: rgba(255, 255, 255, 0.95); /* Blanco con transparencia */
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 100%;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
+/* Clase específica para LOGIN (Más estrecho) */
+.login-box { max-width: 400px; }
 
-.form-group label {
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-}
+/* Clase específica para BUSCADOR (Más ancho para formulario horizontal) */
+.search-box-width { max-width: 800px; }
 
-.form-group input,
-.form-group select {
-    padding: 0.75rem;
-    font-size: 1rem;
+.card-box h2 { margin-bottom: 25px; color: #2c3e50; }
+
+/* =========================================
+   5. FORMULARIOS
+   ========================================= */
+.form-group { margin-bottom: 15px; text-align: left; }
+.form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: var(--border-radius);
+    font-size: 1rem;
 }
 
+/* --- Formulario Vertical (Login) --- */
+#login-form { display: flex; flex-direction: column; gap: 10px; }
 
-/* --- Pie de página (Footer) --- */
-.footer {
-    text-align: center;
-    padding: 2rem 0;
-    margin-top: 2rem;
-    background-color: #333333;
-    color: #f4f4f4;
+/* --- Formulario Horizontal (Buscador) --- */
+.form-inline {
+    display: flex;
+    flex-wrap: wrap; /* Se adapta a móvil bajando de línea */
+    gap: 20px;
+    align-items: flex-end; /* Alinea el botón abajo con los inputs */
+    justify-content: center;
 }
+
+.form-inline .form-group { 
+    flex: 1; /* Los inputs ocupan el mismo espacio */
+    min-width: 200px; /* No se hacen demasiado pequeños */
+}
+
+.form-inline button { 
+    flex: 0 0 auto; /* El botón no se estira de más */
+    margin-bottom: 15px; /* Alineación visual con los inputs */
+    height: 45px; /* Altura para igualar inputs */
+}
+
+/* =========================================
+   6. BOTONES
+   ========================================= */
+.btn {
+    padding: 10px 25px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    font-size: 1rem;
+}
+.btn-primary:hover { background-color: var(--color-primary-hover); transform: translateY(-2px); }
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+}
+.btn-outline:hover { background: var(--color-primary); color: white; }
+
+/* Mensajes de error */
+.error-msg { color: #dc3545; font-size: 0.9rem; margin-top: 10px; min-height: 20px; }
