@@ -34,7 +34,7 @@ main.container {
     width: 1800px;
     /* --- FONDO DE IMAGEN --- */
     /* 1. Ruta de la imagen: Tienes que salir de la carpeta 'css' (..) y entrar en 'img' */
-    background-image: url(imgs/fondoBilbao.jpg); 
+    background-image: url(../imgs/fondoBilbao.jpg); 
     
     /* 2. Propiedades para que la imagen se ajuste y se centre */
     background-size: cover;          /* Asegura que la imagen cubra todo el contenedor */
@@ -85,23 +85,23 @@ main.container {
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
-    background-color: var(--color-primary);
+    background-color: #00cccc;
     color: #fff;
     transition: background-color 0.3s ease;
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    background-color: cadetblue;
 }
 
 .btn-login {
     background-color: transparent;
-    border: 1px solid var(--color-primary);
-    color: var(--color-primary);
+    border: 1px solid #00cccc;
+    color: #00cccc;
 }
 
 .btn-login:hover {
-    background-color: var(--color-primary);
+    background-color: #00cccc;
     color: #fff;
 }
 
