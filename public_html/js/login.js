@@ -1,61 +1,57 @@
-/* 
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/javascript.js to edit this template
  */
 // js/login.js
 
-// Esperamos a que el DOM cargue
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Referencia al formulario y al div de errores
     const loginForm = document.getElementById('login-form');
     const errorDiv = document.getElementById('error-message');
 
-    // Escuchamos el evento submit (sin usar onsubmit en HTML) [cite: 71]
+    // Escuchamos el evento submit [cite: 71]
     loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Evita que la página se recargue
+        e.preventDefault(); // Evita la recarga de la página
 
         const emailInput = document.getElementById('email').value;
         const passInput = document.getElementById('password').value;
 
         try {
-            // 1. Abrimos la base de datos
+            // 1. Abrimos la base de datos (función en db.js)
             const db = await abrirBD();
 
-            // 2. Iniciamos una transacción de lectura en 'usuario'
+            // 2. Iniciamos transacción de lectura
             const transaction = db.transaction(['usuario'], 'readonly');
             const store = transaction.objectStore('usuario');
 
-            // 3. Buscamos al usuario por su email (que es la KeyPath)
+            // 3. Buscamos al usuario por email
             const request = store.get(emailInput);
 
             request.onsuccess = () => {
                 const usuario = request.result;
 
-                // Validación: ¿Existe el usuario? ¿Coincide la contraseña?
+                // Validación: Usuario existe Y contraseña coincide [cite: 20]
                 if (usuario && usuario.password === passInput) {
                     
-                    // A. Guardar en SessionStorage (Requisito clave) [cite: 55]
-                    // Se guarda clave: email, valor: todo el objeto en JSON
-                    sessionStorage.setItem(usuario.email, JSON.stringify(usuario));
+                    // A. Guardar sesión en SessionStorage [cite: 55]
+                    sessionStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
 
-                    // B. Redirigir a la página principal/búsqueda
-                    // Según el flujo, al loguearse vuelves a la pantalla con más opciones [cite: 21]
+                    // B. Redirigir a la página del buscador
                     window.location.href = 'index.html'; 
                 } else {
-                    // Mostrar error visualmente
+                    // Mensaje de error para el usuario
                     errorDiv.textContent = "Error: Usuario o contraseña incorrectos.";
                 }
             };
 
             request.onerror = () => {
-                errorDiv.textContent = "Error al consultar la base de datos.";
+                errorDiv.textContent = "Error al acceder a la base de datos.";
             };
 
         } catch (error) {
+            // Solo dejamos el error en consola por si acaso, pero limpio para el usuario
             console.error(error);
-            errorDiv.textContent = "Error crítico en la aplicación.";
+            errorDiv.textContent = "Ocurrió un error técnico en la aplicación.";
         }
     });
 });
-

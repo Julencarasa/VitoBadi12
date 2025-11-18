@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda - VitoBadi</title>
+    <!-- Vinculamos el CSS específico que has pedido -->
+    <link rel="stylesheet" href="css/resultadosAnonimos.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="header-title">
+                <a href="BuscadorAnonimo.html">
+                    <img src="imgs/VitoBadi Logo.png" alt="VitoBadi" class="header-logo-img">
+                </a>
+            </h1>
+            <nav class="header-nav">
+                <a href="login.html" class="btn btn-outline">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenedor principal con ID para estilos específicos -->
+    <main class="main-content">
+        <section class="container">
+            
+            <!-- Título dinámico (JS lo cambiará a "Habitaciones en Vitoria...") -->
+            <h2 id="titulo-resultado" class="page-title">Cargando resultados...</h2>
+            
+            <!-- CONTENEDOR DE LA REJILLA -->
+            <div id="lista-habitaciones" class="results-grid">
+                <!-- Las tarjetas se generan aquí con JS -->
+            </div>
+            
+            <!-- Botón para volver si no hay resultados -->
+            <div id="mensaje-vacio" style="display: none; text-align: center; background: white; padding: 20px; border-radius: 5px;">
+                <p>No se encontraron habitaciones disponibles para esa fecha.</p>
+                <a href="BuscadorAnonimo.html" class="btn btn-primary" style="margin-top: 10px;">Volver a Buscar</a>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><b>Hector Carrera y Julen Carasa</b> &copy; 2025</p>
+        </div>
+    </footer>
+
+    <!-- Scripts: BD primero, luego la lógica específica -->
+    <script src="js/db.js"></script>
+    <script src="js/resultadosAnonimos.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+/* =========================================
+   RESET Y VARIABLES
+   ========================================= */
+:root {
+    --color-primary: #00cccc;
+    --color-primary-hover: #008b8b;
+    --color-text: #333;
+    --color-bg-light: #f8f9fa;
+    --border-radius: 5px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* =========================================
+   LAYOUT PRINCIPAL (Fondo)
+   ========================================= */
+.main-content {
+    flex: 1;
+    /* Alineación superior para resultados */
+    display: flex;
+    align-items: flex-start; 
+    justify-content: center;
+    padding-top: 40px;
+    
+    /* IMAGEN DE FONDO */
+    background-image: url('../imgs/fondoBilbao.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Efecto parallax simple */
+    background-repeat: no-repeat;
+    padding-bottom: 40px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* =========================================
+   HEADER Y FOOTER
+   ========================================= */
+.header {
+    background: white;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo-img { height: 55px; width: auto; display: block; }
+
+.footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+
+/* Botones */
+.btn {
+    padding: 8px 20px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+}
+.btn-outline:hover { background: var(--color-primary); color: white; }
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+}
+
+/* =========================================
+   ESTILOS ESPECÍFICOS DE RESULTADOS
+   ========================================= */
+
+.page-title {
+    color: white;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2rem;
+}
+
+/* Grid Responsive */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+/* Tarjeta */
+.room-card {
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Contenedor de Imagen */
+.img-wrapper {
+    height: 200px;
+    width: 100%;
+    overflow: hidden;
+    background-color: #ddd;
+    position: relative;
+}
+
+/* REQUISITO: Imagen difuminada */
+.blur-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(6px); /* Nivel de borrosidad */
+    transform: scale(1.1); /* Escala para evitar bordes blancos */
+}
+
+/* Información */
+.room-info {
+    padding: 15px;
+    text-align: center;
+}
+
+.room-address {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.room-price {
+    font-size: 1.4rem;
+    color: var(--color-primary);
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.click-hint {
+    font-size: 0.8rem;
+    color: #888;
+    font-style: italic;
+}
