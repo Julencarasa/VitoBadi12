@@ -31,7 +31,7 @@ body {
     padding-top: 40px;
     
     /* IMAGEN DE FONDO */
-    background-image: url('../imgs/fondoBilbao.jpg');
+    background-image: url('../imgs/fondoVitoria.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed; /* Efecto parallax simple */

@@ -97,24 +97,24 @@ const datosUsuarios = [
 // Campos: idHabi, direccion, lat (double), lon (double), precio, imagen (base64), emailPropietario (FK)
 const datosHabitaciones = [
     // --- VITORIA (10 habitaciones) ---
-    { idHabi: 1, ciudad: 'Vitoria', direccion: 'Calle Dato 1', lat: 42.846, lon: -2.672, precio: 300, imagen: 'imgs/habi1.jpg', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 2, ciudad: 'Vitoria', direccion: 'Av. Gasteiz 45', lat: 42.850, lon: -2.675, precio: 250, imagen: 'imgs/habi2.jpg', emailPropietario: 'propietario1@mail.com' },
-    { idHabi: 3, ciudad: 'Vitoria', direccion: 'Calle San Prudencio', lat: 42.847, lon: -2.670, precio: 350, imagen: 'imgs/habi3.jpg', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 4, ciudad: 'Vitoria', direccion: 'Calle Francia', lat: 42.848, lon: -2.668, precio: 280, imagen: '', emailPropietario: 'propietario2@mail.com' },
-    { idHabi: 5, ciudad: 'Vitoria', direccion: 'Calle La Paz', lat: 42.845, lon: -2.669, precio: 320, imagen: '', emailPropietario: 'propietario3@mail.com' },
-    { idHabi: 6, ciudad: 'Vitoria', direccion: 'Calle Florida', lat: 42.844, lon: -2.671, precio: 310, imagen: '', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 7, ciudad: 'Vitoria', direccion: 'Calle Gorbea', lat: 42.851, lon: -2.678, precio: 290, imagen: '', emailPropietario: 'propietario1@mail.com' },
-    { idHabi: 8, ciudad: 'Vitoria', direccion: 'Avenida Santiago', lat: 42.849, lon: -2.665, precio: 260, imagen: '', emailPropietario: 'propietario2@mail.com' },
-    { idHabi: 9, ciudad: 'Vitoria', direccion: 'Portal de Castilla', lat: 42.843, lon: -2.680, precio: 300, imagen: '', emailPropietario: 'propietario3@mail.com' },
-    { idHabi: 10, ciudad: 'Vitoria', direccion: 'Calle Prado', lat: 42.846, lon: -2.674, precio: 400, imagen: '', emailPropietario: 'mco@deusto.es' },
+    { idHabi: 1, ciudad: 'Vitoria', direccion: 'Calle Dato 1', lat: 42.846, lon: -2.672, precio: 300, imagen: 'imgs/Habitaciones/hab1.jpg', emailPropietario: 'mco@deusto.es' },
+    { idHabi: 2, ciudad: 'Vitoria', direccion: 'Av. Gasteiz 45', lat: 42.850, lon: -2.675, precio: 250, imagen: 'imgs/Habitaciones/hab2.jpg', emailPropietario: 'propietario1@mail.com' },
+    { idHabi: 3, ciudad: 'Vitoria', direccion: 'Calle San Prudencio', lat: 42.847, lon: -2.670, precio: 350, imagen: 'imgs/Habitaciones/hab3.jpg', emailPropietario: 'mco@deusto.es' },
+    { idHabi: 4, ciudad: 'Vitoria', direccion: 'Calle Francia', lat: 42.848, lon: -2.668, precio: 280, imagen: 'imgs/Habitaciones/hab4.jpg', emailPropietario: 'propietario2@mail.com' },
+    { idHabi: 5, ciudad: 'Vitoria', direccion: 'Calle La Paz', lat: 42.845, lon: -2.669, precio: 320, imagen: 'imgs/Habitaciones/hab5.jpg', emailPropietario: 'propietario3@mail.com' },
+    { idHabi: 6, ciudad: 'Vitoria', direccion: 'Calle Florida', lat: 42.844, lon: -2.671, precio: 310, imagen: 'imgs/Habitaciones/hab6.jpg', emailPropietario: 'mco@deusto.es' },
+    { idHabi: 7, ciudad: 'Vitoria', direccion: 'Calle Gorbea', lat: 42.851, lon: -2.678, precio: 290, imagen: 'imgs/Habitaciones/hab7.jpg', emailPropietario: 'propietario1@mail.com' },
+    { idHabi: 8, ciudad: 'Vitoria', direccion: 'Avenida Santiago', lat: 42.849, lon: -2.665, precio: 260, imagen: 'imgs/Habitaciones/hab8.jpg', emailPropietario: 'propietario2@mail.com' },
+    { idHabi: 9, ciudad: 'Vitoria', direccion: 'Portal de Castilla', lat: 42.843, lon: -2.680, precio: 300, imagen: 'imgs/Habitaciones/hab9.jpg', emailPropietario: 'propietario3@mail.com' },
+    { idHabi: 10, ciudad: 'Vitoria', direccion: 'Calle Prado', lat: 42.846, lon: -2.674, precio: 400, imagen: 'imgs/Habitaciones/hab10.jpg', emailPropietario: 'mco@deusto.es' },
 
     // --- BILBAO (2 habitaciones) ---
-    { idHabi: 11, ciudad: 'Bilbao', direccion: 'Gran Vía 10', lat: 43.263, lon: -2.935, precio: 450, imagen: 'imgs/habi_bilbao.jpg', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 12, ciudad: 'Bilbao', direccion: 'Casco Viejo 2', lat: 43.258, lon: -2.923, precio: 400, imagen: '', emailPropietario: 'propietario1@mail.com' },
+    { idHabi: 11, ciudad: 'Bilbao', direccion: 'Gran Vía 10', lat: 43.263, lon: -2.935, precio: 450, imagen: 'imgs/Habitaciones/hab11.jpg', emailPropietario: 'mco@deusto.es' },
+    { idHabi: 12, ciudad: 'Bilbao', direccion: 'Casco Viejo 2', lat: 43.258, lon: -2.923, precio: 400, imagen: 'imgs/Habitaciones/hab12.jpg', emailPropietario: 'propietario1@mail.com' },
 
     // --- DONOSTIA (2 habitaciones) ---
-    { idHabi: 13, ciudad: 'Donostia', direccion: 'La Concha 1', lat: 43.315, lon: -1.986, precio: 600, imagen: 'imgs/habi_donostia.jpg', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 14, ciudad: 'Donostia', direccion: 'Gros 5', lat: 43.322, lon: -1.976, precio: 550, imagen: '', emailPropietario: 'propietario1@mail.com' }
+    { idHabi: 13, ciudad: 'Donostia', direccion: 'La Concha 1', lat: 43.315, lon: -1.986, precio: 600, imagen: 'imgs/Habitaciones/hab13.jpg', emailPropietario: 'mco@deusto.es' },
+    { idHabi: 14, ciudad: 'Donostia', direccion: 'Gros 5', lat: 43.322, lon: -1.976, precio: 550, imagen: 'imgs/Habitaciones/hab14.jpg', emailPropietario: 'propietario1@mail.com' }
 ];
 
 // Requisito: Datos para pruebas de Alquiler 

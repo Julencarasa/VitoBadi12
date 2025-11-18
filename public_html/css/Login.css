@@ -50,7 +50,7 @@ body {
     
     /* IMAGEN DE FONDO */
     /* Los .. suben un nivel para salir de 'css' y entrar en 'imgs' */
-    background-image: url('../imgs/fondoBilbao.jpg'); 
+    background-image: url('../imgs/fondoBuscador.jpg'); 
     background-size: cover;
     background-position: center;
     padding: 20px;

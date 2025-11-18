@@ -38,7 +38,7 @@ body {
     justify-content: center; /* Centrado Horizontal */
     
     /* IMAGEN DE FONDO (Ruta corregida para carpeta css) */
-    background-image: url('../imgs/fondoBilbao.jpg');
+    background-image: url('../imgs/fondoBuscador.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
