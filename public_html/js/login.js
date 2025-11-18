@@ -1,13 +1,12 @@
 /**
- * js/login.js - Versión Final con Redirección por Ticket
+ * js/login.js - Con protección anti-autoalquiler para propietarios
  */
 document.addEventListener('DOMContentLoaded', () => {
     
     const loginForm = document.getElementById('login-form');
     const errorDiv = document.getElementById('error-message');
 
-    // Limpiamos la sesión anterior (logout implícito) al cargar el login
-    // PERO NO borramos 'destinoPendiente' porque lo necesitamos para redirigir
+    // Limpiamos sesión previa (pero NO el destino pendiente)
     sessionStorage.removeItem('currentUser');
 
     if (loginForm) {
@@ -24,35 +23,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const db = await abrirBD(); 
-                const tx = db.transaction(['usuario'], 'readonly');
-                const store = tx.objectStore('usuario');
-                const request = store.get(emailInput);
+                
+                // Transacción de USUARIO (Login)
+                const txUser = db.transaction(['usuario'], 'readonly');
+                const storeUser = txUser.objectStore('usuario');
+                const request = storeUser.get(emailInput);
 
-                request.onsuccess = () => {
+                request.onsuccess = async () => {
                     const usuario = request.result;
 
+                    // 1. VERIFICAR CREDENCIALES
                     if (usuario && usuario.password === passInput) {
                         
-                        // 1. GUARDAR SESIÓN
+                        // Guardar sesión
                         const usuarioSession = { ...usuario };
-                        delete usuarioSession.password; // Por seguridad
-                        
+                        delete usuarioSession.password;
                         sessionStorage.setItem(usuario.email, JSON.stringify(usuarioSession));
                         sessionStorage.setItem('currentUser', usuario.email);
 
-                        // 2. LEER TICKET DE DESTINO
+                        // 2. LÓGICA DE REDIRECCIÓN CON PROTECCIÓN
                         const destinoPendiente = sessionStorage.getItem('destinoPendiente');
+                        let urlFinal = 'BuscadorLogeado.html'; // Destino por defecto
 
                         if (destinoPendiente) {
-                            // CASO A: Hay un ticket (Viene de una carta o del botón header en resultados)
-                            console.log("Usando ticket de destino:", destinoPendiente);
-                            sessionStorage.removeItem('destinoPendiente'); // Borramos el ticket usado
-                            window.location.href = destinoPendiente;
-                        } else {
-                            // CASO B: No hay ticket (Viene del botón login en buscador normal)
-                            console.log("Login estándar. Yendo a BuscadorLogeado.");
-                            window.location.href = 'BuscadorLogeado.html';
+                            // CASO A: Intenta ver una habitación específica
+                            if (destinoPendiente.includes('index.html?id=')) {
+                                try {
+                                    // Extraemos el ID de la habitación de la URL
+                                    const urlParams = new URLSearchParams(destinoPendiente.split('?')[1]);
+                                    const idHabi = parseInt(urlParams.get('id'));
+
+                                    // Nueva transacción para consultar la habitación
+                                    const txHab = db.transaction(['habitacion'], 'readonly');
+                                    const storeHab = txHab.objectStore('habitacion');
+                                    
+                                    // Promesa para obtener la habitación
+                                    const habitacion = await new Promise((resolve) => {
+                                        const reqHab = storeHab.get(idHabi);
+                                        reqHab.onsuccess = () => resolve(reqHab.result);
+                                        reqHab.onerror = () => resolve(null);
+                                    });
+
+                                    // ¿SOY YO EL DUEÑO?
+                                    if (habitacion && habitacion.emailPropietario === usuario.email) {
+                                        console.warn("Acceso redirigido: Eres el propietario de esta habitación.");
+                                        // No le dejamos ir a index.html, se va al menú principal
+                                        urlFinal = 'BuscadorLogeado.html';
+                                    } else {
+                                        // No es el dueño, puede verla
+                                        urlFinal = destinoPendiente;
+                                    }
+
+                                } catch (err) {
+                                    console.error("Error verificando propiedad:", err);
+                                    // Ante la duda, al menú principal
+                                    urlFinal = 'BuscadorLogeado.html';
+                                }
+                            } 
+                            // CASO B: Es una redirección de búsqueda (ResultadosLogeado.html)
+                            else {
+                                urlFinal = destinoPendiente;
+                            }
+
+                            // Limpiamos el ticket usado
+                            sessionStorage.removeItem('destinoPendiente');
                         }
+
+                        // 3. EJECUTAR LA REDIRECCIÓN FINAL
+                        console.log("Redirigiendo a:", urlFinal);
+                        window.location.href = urlFinal;
 
                     } else {
                         mostrarError("Usuario o contraseña incorrectos.");
@@ -60,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 request.onerror = () => {
-                    mostrarError("Error al leer la base de datos.");
+                    mostrarError("Error al leer el usuario de la base de datos.");
                 };
 
             } catch (error) {

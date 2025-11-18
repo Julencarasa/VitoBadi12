@@ -1,8 +1,9 @@
 /* js/ResultadosLogeado.js */
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Verificación de seguridad (opcional, pero recomendada)
-    if (!sessionStorage.getItem('currentUser')) {
+    // Verificación de seguridad
+    const currentUserEmail = sessionStorage.getItem('currentUser');
+    if (!currentUserEmail) {
         window.location.href = 'login.html';
         return;
     }
@@ -32,19 +33,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     const imagenAUsar = imagenesFondo[ciudadBuscada] || 'imgs/fondoVitoria.jpg';
     if (mainContent) mainContent.style.backgroundImage = `url('${imagenAUsar}')`;
-    /* ---------------------- */
 
     try {
         const db = await abrirBD();
 
-        // Consultas BD
         const tx = db.transaction(['habitacion', 'alquiler'], 'readonly');
         const storeHab = tx.objectStore('habitacion');
         const indexCiudad = storeHab.index('ciudad');
         
         const habitaciones = await new Promise(resolve => {
             indexCiudad.getAll(ciudadBuscada).onsuccess = (e) => resolve(e.target.result);
-            // Si falla, devolvemos array vacío
             indexCiudad.getAll(ciudadBuscada).onerror = () => resolve([]);
         });
 
@@ -54,26 +52,38 @@ document.addEventListener('DOMContentLoaded', async () => {
             storeAlq.getAll().onerror = () => resolve([]);
         });
 
-        // Filtrar ocupadas
+        // FILTRADO COMPLETO
         const habitacionesDisponibles = habitaciones.filter(hab => {
+            
+            /* --- NUEVO FILTRO: NO MOSTRAR MIS PROPIAS HABITACIONES --- */
+            // Si soy el dueño, devuelvo false para que NO salga en la lista
+            if (hab.emailPropietario === currentUserEmail) {
+                return false; 
+            }
+            /* --------------------------------------------------------- */
+
+            // Filtro de fechas (igual que antes)
             const estaOcupada = alquileres.some(alq => {
                 if (alq.idHabi !== hab.idHabi) return false;
                 const fInicio = new Date(alq.fIni);
                 const fFin = new Date(alq.fFin);
                 return (fechaBusqueda >= fInicio && fechaBusqueda <= fFin);
             });
+            
             return !estaOcupada;
         });
 
         // Ordenar por precio
         habitacionesDisponibles.sort((a, b) => a.precio - b.precio);
 
-        // --- PINTAR RESULTADOS ---
+        // PINTAR RESULTADOS
         if (contenedor) contenedor.innerHTML = "";
 
         if (habitacionesDisponibles.length === 0) {
             if (contenedor) contenedor.style.display = 'none';
             if (mensajeVacio) mensajeVacio.style.display = 'block';
+            // Opcional: Cambiar el texto si no hay resultados porque son todas suyas
+            // document.querySelector('#mensaje-vacio p').textContent = "No hay habitaciones disponibles (o eres el propietario de todas).";
             return;
         }
 
@@ -81,26 +91,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement('div');
             card.className = 'room-card';
 
-            // REQUISITO: Redirigir a index.html (descripción)
-            // Pasamos el ID para que index.html sepa cuál mostrar
+            // Redirigir a index.html (descripción)
             card.addEventListener('click', () => {
                 window.location.href = `index.html?id=${hab.idHabi}`;
             });
 
             const imagenSrc = (hab.imagen && hab.imagen.length > 10) ? hab.imagen : 'imgs/VitoBadi Logo.png';
 
-            // REQUISITO: Mostrar Lat/Lon y Foto nítida
             card.innerHTML = `
                 <div class="img-wrapper">
                     <img src="${imagenSrc}" alt="${hab.direccion}" class="sharp-img" onerror="this.src='imgs/VitoBadi Logo.png'">
                 </div>
                 <div class="room-info">
                     <h3 class="room-address">${hab.direccion}</h3>
-                    
                     <p class="room-coords">
                         Lat: ${hab.lat} | Lon: ${hab.lon}
                     </p>
-                    
                     <p class="room-price">${hab.precio} € / mes</p>
                     <span class="click-hint">Ver detalles completos</span>
                 </div>
