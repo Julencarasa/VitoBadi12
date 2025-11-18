@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido - VitoBadi</title>
+    <link rel="stylesheet" href="css/BuscadorLogeado.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <!-- Logo -->
+            <h1 class="header-title">
+                <a href="BuscadorLogeado.html">
+                    <img src="imgs/VitoBadi Logo.png" alt="VitoBadi" class="header-logo-img">
+                </a>
+            </h1>
+
+            <!-- Área de Usuario (Se llena con JS) -->
+            <nav class="header-nav user-nav">
+                <div class="user-info">
+                    <span id="user-greeting">Cargando...</span>
+                    <img id="user-photo" src="imgs/user_placeholder.png" alt="Perfil" class="profile-pic">
+                </div>
+                <button id="btn-logout" class="btn btn-outline btn-sm">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        
+        <section class="card-box search-box-width">
+            <!-- Título dinámico -->
+            <h2 id="welcome-title">Buscar Habitación</h2>
+            
+            <form id="search-form" class="form-inline">
+                
+                <div class="form-group">
+                    <label for="ciudad">Ciudad:</label>
+                    <select id="ciudad" name="ciudad" required>
+                        <option value="">Selecciona una ciudad</option>
+                        <option value="Vitoria">Vitoria</option>
+                        <option value="Bilbao">Bilbao</option>
+                        <option value="Donostia">Donostia</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fecha">Fecha entrada:</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </form>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><b>Hector Carrera y Julen Carasa</b> &copy; 2025</p>
+        </div>
+    </footer>
+
+    <!-- Scripts: Primero el núcleo, luego la lógica de esta página -->
+    <script src="js/vitobadi12.js"></script>
+    <script src="js/BuscadorLogeado.js"></script>
+</body>
+</html>

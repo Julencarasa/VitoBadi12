@@ -1,57 +1,97 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/javascript.js to edit this template
+/**
+ * js/login.js - Versión depurada y robusta
  */
-// js/login.js
-
 document.addEventListener('DOMContentLoaded', () => {
     
     const loginForm = document.getElementById('login-form');
     const errorDiv = document.getElementById('error-message');
 
-    // Escuchamos el evento submit [cite: 71]
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Evita la recarga de la página
+    // Limpiar sesión previa
+    sessionStorage.clear();
 
-        const emailInput = document.getElementById('email').value;
-        const passInput = document.getElementById('password').value;
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // 1. Frenamos el envío tradicional
+            
+            const emailInput = document.getElementById('email').value.trim();
+            const passInput = document.getElementById('password').value.trim();
 
-        try {
-            // 1. Abrimos la base de datos (función en db.js)
-            const db = await abrirBD();
+            if (!emailInput || !passInput) {
+                mostrarError("Por favor, rellena todos los campos.");
+                return;
+            }
 
-            // 2. Iniciamos transacción de lectura
-            const transaction = db.transaction(['usuario'], 'readonly');
-            const store = transaction.objectStore('usuario');
+            try {
+                console.log("Iniciando conexión a BD...");
+                // 2. Conectamos a la BD
+                const db = await abrirBD(); 
+                
+                const tx = db.transaction(['usuario'], 'readonly');
+                const store = tx.objectStore('usuario');
+                const request = store.get(emailInput);
 
-            // 3. Buscamos al usuario por email
-            const request = store.get(emailInput);
+                request.onsuccess = () => {
+                    const usuario = request.result;
+                    console.log("Usuario encontrado:", usuario ? "Sí" : "No");
 
-            request.onsuccess = () => {
-                const usuario = request.result;
+                    // 3. Verificación
+                    if (usuario && usuario.password === passInput) {
+                        console.log("Contraseña correcta. Guardando sesión...");
+                        
+                        // Guardar sesión
+                        const usuarioSession = { ...usuario };
+                        delete usuarioSession.password; 
+                        sessionStorage.setItem(usuario.email, JSON.stringify(usuarioSession));
+                        sessionStorage.setItem('currentUser', usuario.email);
 
-                // Validación: Usuario existe Y contraseña coincide [cite: 20]
-                if (usuario && usuario.password === passInput) {
-                    
-                    // A. Guardar sesión en SessionStorage [cite: 55]
-                    sessionStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+                        // 4. Lógica de Redirección Segura
+                        let destino = 'BuscadorLogeado.html'; // Destino por defecto
 
-                    // B. Redirigir a la página del buscador
-                    window.location.href = 'index.html'; 
-                } else {
-                    // Mensaje de error para el usuario
-                    errorDiv.textContent = "Error: Usuario o contraseña incorrectos.";
-                }
-            };
+                        try {
+                            const origen = document.referrer;
+                            console.log("Vengo de:", origen);
 
-            request.onerror = () => {
-                errorDiv.textContent = "Error al acceder a la base de datos.";
-            };
+                            if (origen && typeof origen === 'string') {
+                                if (origen.indexOf('resultadosAnonimos.html') !== -1) {
+                                    // Reemplazar la página pero mantener los parámetros URL (?ciudad=...)
+                                    destino = origen.replace('resultadosAnonimos.html', 'resultadosLogeados.html');
+                                } 
+                                else if (origen.indexOf('BuscadorAnonimo.html') !== -1) {
+                                    destino = 'BuscadorLogeado.html';
+                                }
+                            }
+                        } catch (err) {
+                            console.warn("Error calculando redirección, usando por defecto:", err);
+                        }
 
-        } catch (error) {
-            // Solo dejamos el error en consola por si acaso, pero limpio para el usuario
-            console.error(error);
-            errorDiv.textContent = "Ocurrió un error técnico en la aplicación.";
+                        console.log("Redirigiendo a:", destino);
+                        // Forzamos la redirección
+                        window.location.href = destino;
+
+                    } else {
+                        mostrarError("Usuario o contraseña incorrectos.");
+                    }
+                };
+
+                request.onerror = () => {
+                    console.error("Error en request DB:", request.error);
+                    mostrarError("Error al leer el usuario de la base de datos.");
+                };
+
+            } catch (error) {
+                console.error("Error crítico:", error);
+                // Mensaje especial si la BD no abre (posible bloqueo de versión)
+                mostrarError("Error de conexión. Si tienes otras pestañas abiertas, ciérralas y recarga.");
+            }
+        });
+    }
+
+    function mostrarError(mensaje) {
+        if (errorDiv) {
+            errorDiv.textContent = mensaje;
+            errorDiv.style.display = 'block';
+        } else {
+            alert(mensaje);
         }
-    });
+    }
 });

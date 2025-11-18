@@ -1,0 +1,91 @@
+/* css/BuscadorLogeado.css - Tema Turquesa + User Nav */
+:root {
+    --color-primary: #00cccc;
+    --color-primary-hover: #008b8b;
+    --color-bg: #f8f9fa;
+    --color-text: #333;
+    --border-radius: 5px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- Header --- */
+.header { background: white; padding: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.header-content { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+.header-logo-img { height: 50px; width: auto; }
+
+/* --- NAVEGACIÓN DE USUARIO (NUEVO) --- */
+.user-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Foto redonda */
+    object-fit: cover;
+    border: 2px solid var(--color-primary);
+}
+
+#btn-logout {
+    font-size: 0.9rem;
+    padding: 5px 12px;
+}
+
+/* --- Main Content --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../imgs/fondoBuscador.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+}
+
+/* --- Caja Central --- */
+.card-box {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+}
+.card-box h2 { margin-bottom: 25px; color: #2c3e50; }
+
+/* Formulario */
+.form-inline { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: center; }
+.form-group { flex: 1; min-width: 200px; text-align: left; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+.form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: var(--border-radius); font-size: 1rem; }
+
+/* Botones */
+.btn { border-radius: var(--border-radius); text-decoration: none; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; }
+.btn-primary { background-color: var(--color-primary); color: white; height: 45px; margin-bottom: 15px; padding: 0 25px; }
+.btn-primary:hover { background-color: var(--color-primary-hover); }
+.btn-outline { background: transparent; border: 1px solid #dc3545; color: #dc3545; } /* Logout en rojo sutil */
+.btn-outline:hover { background: #dc3545; color: white; }
+
+.footer { background: #333; color: white; text-align: center; padding: 15px; margin-top: auto; }
