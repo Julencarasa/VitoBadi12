@@ -1,17 +1,18 @@
 /**
- * js/login.js - Versión depurada y robusta
+ * js/login.js - Versión Final con Redirección por Ticket
  */
 document.addEventListener('DOMContentLoaded', () => {
     
     const loginForm = document.getElementById('login-form');
     const errorDiv = document.getElementById('error-message');
 
-    // Limpiar sesión previa
-    sessionStorage.clear();
+    // Limpiamos la sesión anterior (logout implícito) al cargar el login
+    // PERO NO borramos 'destinoPendiente' porque lo necesitamos para redirigir
+    sessionStorage.removeItem('currentUser');
 
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // 1. Frenamos el envío tradicional
+            e.preventDefault(); 
             
             const emailInput = document.getElementById('email').value.trim();
             const passInput = document.getElementById('password').value.trim();
@@ -22,51 +23,36 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                console.log("Iniciando conexión a BD...");
-                // 2. Conectamos a la BD
                 const db = await abrirBD(); 
-                
                 const tx = db.transaction(['usuario'], 'readonly');
                 const store = tx.objectStore('usuario');
                 const request = store.get(emailInput);
 
                 request.onsuccess = () => {
                     const usuario = request.result;
-                    console.log("Usuario encontrado:", usuario ? "Sí" : "No");
 
-                    // 3. Verificación
                     if (usuario && usuario.password === passInput) {
-                        console.log("Contraseña correcta. Guardando sesión...");
                         
-                        // Guardar sesión
+                        // 1. GUARDAR SESIÓN
                         const usuarioSession = { ...usuario };
-                        delete usuarioSession.password; 
+                        delete usuarioSession.password; // Por seguridad
+                        
                         sessionStorage.setItem(usuario.email, JSON.stringify(usuarioSession));
                         sessionStorage.setItem('currentUser', usuario.email);
 
-                        // 4. Lógica de Redirección Segura
-                        let destino = 'BuscadorLogeado.html'; // Destino por defecto
+                        // 2. LEER TICKET DE DESTINO
+                        const destinoPendiente = sessionStorage.getItem('destinoPendiente');
 
-                        try {
-                            const origen = document.referrer;
-                            console.log("Vengo de:", origen);
-
-                            if (origen && typeof origen === 'string') {
-                                if (origen.indexOf('resultadosAnonimos.html') !== -1) {
-                                    // Reemplazar la página pero mantener los parámetros URL (?ciudad=...)
-                                    destino = origen.replace('resultadosAnonimos.html', 'resultadosLogeados.html');
-                                } 
-                                else if (origen.indexOf('BuscadorAnonimo.html') !== -1) {
-                                    destino = 'BuscadorLogeado.html';
-                                }
-                            }
-                        } catch (err) {
-                            console.warn("Error calculando redirección, usando por defecto:", err);
+                        if (destinoPendiente) {
+                            // CASO A: Hay un ticket (Viene de una carta o del botón header en resultados)
+                            console.log("Usando ticket de destino:", destinoPendiente);
+                            sessionStorage.removeItem('destinoPendiente'); // Borramos el ticket usado
+                            window.location.href = destinoPendiente;
+                        } else {
+                            // CASO B: No hay ticket (Viene del botón login en buscador normal)
+                            console.log("Login estándar. Yendo a BuscadorLogeado.");
+                            window.location.href = 'BuscadorLogeado.html';
                         }
-
-                        console.log("Redirigiendo a:", destino);
-                        // Forzamos la redirección
-                        window.location.href = destino;
 
                     } else {
                         mostrarError("Usuario o contraseña incorrectos.");
@@ -74,14 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 request.onerror = () => {
-                    console.error("Error en request DB:", request.error);
-                    mostrarError("Error al leer el usuario de la base de datos.");
+                    mostrarError("Error al leer la base de datos.");
                 };
 
             } catch (error) {
                 console.error("Error crítico:", error);
-                // Mensaje especial si la BD no abre (posible bloqueo de versión)
-                mostrarError("Error de conexión. Si tienes otras pestañas abiertas, ciérralas y recarga.");
+                mostrarError("Error de conexión. Intenta recargar la página.");
             }
         });
     }

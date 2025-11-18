@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados Disponibles - VitoBadi</title>
+    <link rel="stylesheet" href="css/ResultadosLogeado.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="header-title">
+                <a href="BuscadorLogeado.html">
+                    <img src="imgs/VitoBadi Logo.png" alt="VitoBadi" class="header-logo-img">
+                </a>
+            </h1>
+            <nav class="header-nav">
+                <a href="BuscadorLogeado.html" class="btn btn-outline">Volver</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="container">
+            
+            <h2 id="titulo-resultado" class="page-title">Cargando disponibilidad...</h2>
+            
+            <div id="lista-habitaciones" class="results-grid"></div>
+            
+            <div id="mensaje-vacio" style="display: none; text-align: center; background: white; padding: 20px; border-radius: 5px;">
+                <p>No se encontraron habitaciones disponibles para esa fecha.</p>
+                <a href="BuscadorLogeado.html" class="btn btn-primary" style="margin-top: 10px;">Volver a Buscar</a>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><b>Hector Carrera y Julen Carasa</b> &copy; 2025</p>
+        </div>
+    </footer>
+
+    <script src="js/vitobadi12.js"></script>
+    <script src="js/ResultadosLogeado.js"></script>
+
+</body>
+</html>

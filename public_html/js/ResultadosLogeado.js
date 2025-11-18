@@ -1,48 +1,29 @@
-/* js/resultadosAnonimos.js */
+/* js/ResultadosLogeado.js */
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Verificación de seguridad (opcional, pero recomendada)
+    if (!sessionStorage.getItem('currentUser')) {
+        window.location.href = 'login.html';
+        return;
+    }
+
     const contenedor = document.getElementById('lista-habitaciones');
     const titulo = document.getElementById('titulo-resultado');
     const mensajeVacio = document.getElementById('mensaje-vacio');
 
-    // 1. OBTENER PARÁMETROS DE LA URL
     const params = new URLSearchParams(window.location.search);
     const ciudadBuscada = params.get('ciudad');
     const fechaBuscadaStr = params.get('fecha');
 
-    // Validación básica
     if (!ciudadBuscada || !fechaBuscadaStr) {
-        if (titulo) titulo.textContent = "Error: Datos de búsqueda incompletos.";
+        if (titulo) titulo.textContent = "Error: Datos incompletos.";
         return;
     }
 
     const fechaBusqueda = new Date(fechaBuscadaStr);
     if (titulo) titulo.textContent = `Habitaciones disponibles en ${ciudadBuscada}`;
 
-    /* ===========================================================
-       NUEVO: INTERCEPTOR DEL BOTÓN LOGIN (HEADER)
-       =========================================================== */
-    // Buscamos el botón que lleva al login en la barra de navegación
-    const btnLoginHeader = document.querySelector('.header-nav a[href="login.html"]');
-    
-    if (btnLoginHeader) {
-        btnLoginHeader.addEventListener('click', (e) => {
-            e.preventDefault(); // Evitamos que navegue directamente
-            
-            // Construimos la URL "VIP" con los mismos datos que ya tenemos
-            const destinoVIP = `ResultadosLogeado.html${window.location.search}`;
-            
-            // Guardamos el ticket
-            sessionStorage.setItem('destinoPendiente', destinoVIP);
-            
-            // Nos vamos al login
-            window.location.href = 'login.html';
-        });
-    }
-    /* =========================================================== */
-
-
-    /* --- CAMBIO DE FONDO SEGÚN CIUDAD --- */
+    /* --- CAMBIO DE FONDO --- */
     const mainContent = document.querySelector('.main-content');
     const imagenesFondo = {
         'Vitoria': 'imgs/fondoVitoria.jpg',
@@ -51,32 +32,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     const imagenAUsar = imagenesFondo[ciudadBuscada] || 'imgs/fondoVitoria.jpg';
     if (mainContent) mainContent.style.backgroundImage = `url('${imagenAUsar}')`;
-
+    /* ---------------------- */
 
     try {
-        // 2. CONEXIÓN A LA BASE DE DATOS
         const db = await abrirBD();
 
-        // 3. OBTENER DATOS
+        // Consultas BD
         const tx = db.transaction(['habitacion', 'alquiler'], 'readonly');
-        
         const storeHab = tx.objectStore('habitacion');
         const indexCiudad = storeHab.index('ciudad');
         
         const habitaciones = await new Promise(resolve => {
-            const req = indexCiudad.getAll(ciudadBuscada);
-            req.onsuccess = (e) => resolve(e.target.result);
-            req.onerror = () => resolve([]);
+            indexCiudad.getAll(ciudadBuscada).onsuccess = (e) => resolve(e.target.result);
+            // Si falla, devolvemos array vacío
+            indexCiudad.getAll(ciudadBuscada).onerror = () => resolve([]);
         });
 
         const storeAlq = tx.objectStore('alquiler');
         const alquileres = await new Promise(resolve => {
-            const req = storeAlq.getAll();
-            req.onsuccess = (e) => resolve(e.target.result);
-            req.onerror = () => resolve([]);
+            storeAlq.getAll().onsuccess = (e) => resolve(e.target.result);
+            storeAlq.getAll().onerror = () => resolve([]);
         });
 
-        // 4. FILTRAR DISPONIBILIDAD
+        // Filtrar ocupadas
         const habitacionesDisponibles = habitaciones.filter(hab => {
             const estaOcupada = alquileres.some(alq => {
                 if (alq.idHabi !== hab.idHabi) return false;
@@ -87,11 +65,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             return !estaOcupada;
         });
 
-        // 5. ORDENAR
+        // Ordenar por precio
         habitacionesDisponibles.sort((a, b) => a.precio - b.precio);
 
-        // 6. PINTAR RESULTADOS
-        if (contenedor) contenedor.innerHTML = ""; 
+        // --- PINTAR RESULTADOS ---
+        if (contenedor) contenedor.innerHTML = "";
 
         if (habitacionesDisponibles.length === 0) {
             if (contenedor) contenedor.style.display = 'none';
@@ -103,34 +81,36 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement('div');
             card.className = 'room-card';
 
-            /* ================================================================
-               CLIC EN TARJETA -> IR A DETALLE (INDEX.HTML)
-               ================================================================ */
+            // REQUISITO: Redirigir a index.html (descripción)
+            // Pasamos el ID para que index.html sepa cuál mostrar
             card.addEventListener('click', () => {
-                // Queremos ver el detalle de esta habitación concreta
-                const destinoDetalle = `index.html?id=${hab.idHabi}`;
-                sessionStorage.setItem('destinoPendiente', destinoDetalle);
-                window.location.href = 'login.html';
+                window.location.href = `index.html?id=${hab.idHabi}`;
             });
 
-            // Imagen (placeholder si falla)
             const imagenSrc = (hab.imagen && hab.imagen.length > 10) ? hab.imagen : 'imgs/VitoBadi Logo.png';
 
+            // REQUISITO: Mostrar Lat/Lon y Foto nítida
             card.innerHTML = `
                 <div class="img-wrapper">
-                    <img src="${imagenSrc}" alt="${hab.direccion}" class="blur-img" onerror="this.src='imgs/VitoBadi Logo.png'">
+                    <img src="${imagenSrc}" alt="${hab.direccion}" class="sharp-img" onerror="this.src='imgs/VitoBadi Logo.png'">
                 </div>
                 <div class="room-info">
                     <h3 class="room-address">${hab.direccion}</h3>
+                    
+                    <p class="room-coords">
+                        Lat: ${hab.lat} | Lon: ${hab.lon}
+                    </p>
+                    
                     <p class="room-price">${hab.precio} € / mes</p>
-                    <span class="click-hint">Clic para ver detalles</span>
+                    <span class="click-hint">Ver detalles completos</span>
                 </div>
             `;
+
             contenedor.appendChild(card);
         });
 
     } catch (error) {
-        console.error("Error crítico:", error);
+        console.error("Error:", error);
         if (titulo) titulo.textContent = "Error al cargar los datos.";
     }
 });

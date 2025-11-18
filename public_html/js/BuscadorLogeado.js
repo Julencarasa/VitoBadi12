@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Aquí podrías redirigir a 'ResultadosLogeado.html' si esa página va a ser distinta
             // (por ejemplo, mostrando fotos nítidas y botones de alquilar)
             // De momento, enviamos a la misma de resultados pero quizás quieras añadir un parámetro '&user=1'
-            window.location.href = `resultadosAnonimos.html?ciudad=${encodeURIComponent(ciudad)}&fecha=${encodeURIComponent(fecha)}`;
+            window.location.href = `resultadosLogeado.html?ciudad=${encodeURIComponent(ciudad)}&fecha=${encodeURIComponent(fecha)}`;
         } else {
             alert("Por favor rellena todos los campos");
         }

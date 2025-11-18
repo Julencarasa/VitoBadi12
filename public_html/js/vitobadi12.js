@@ -123,7 +123,7 @@ const datosAlquileres = [
     // Alquiler activo
     { idContrato: 1, idHabi: 1, emailInqui: 'inquilino1@mail.com', fIni: '2025-01-01', fFin: '2025-12-31' },
     // Alquiler finalizado (pasado)
-    { idContrato: 2, idHabi: 2, emailInqui: 'inquilino2@mail.com', fIni: '2025-11-18', fFin: '2026-02-30' },
+    { idContrato: 2, idHabi: 2, emailInqui: 'inquilino2@mail.com', fIni: '2025-11-18', fFin: '2026-02-28' },
      // Alquiler futuro
     { idContrato: 3, idHabi: 11, emailInqui: 'inquilino1@mail.com', fIni: '2025-12-01', fFin: '2026-06-01' }
 ];
