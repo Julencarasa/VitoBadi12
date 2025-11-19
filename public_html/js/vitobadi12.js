@@ -79,59 +79,64 @@ function abrirBD() {
 
 // --- DATOS DE PRUEBA (Carga inicial) ---
 
-// Requisito: 8 usuarios 
+
+
+// --- DATOS DE PRUEBA REALISTAS ---
+
 const datosUsuarios = [
-    // Propietarios
-    { email: 'mco@deusto.es', password: '1234', nombre: 'MCO', foto: 'imgs/user1.jpg' }, // Usuario del ejemplo [cite: 20]
-    { email: 'propietario1@mail.com', password: '123', nombre: 'Juan Prop', foto: '' },
-    { email: 'propietario2@mail.com', password: '123', nombre: 'Maria Prop', foto: '' },
-    { email: 'propietario3@mail.com', password: '123', nombre: 'Pedro Prop', foto: '' },
+    // Propietarios (Email empieza por 'p' para identificar fácil, nombre real)
+    { email: 'pemiliogarcia@mail.com', password: '123', nombre: 'Emilio Garcia', foto: 'imgs/Usuarios/hom1.jpg' }, 
+    { email: 'pjuanperez@mail.com', password: '123', nombre: 'Juan Pérez', foto: 'imgs/Usuarios/hom2.jpg' },
+    { email: 'pmarialopez@mail.com', password: '123', nombre: 'María López', foto: 'imgs/Usuarios/muj1.jpg' },
+    { email: 'ppedrogomez@mail.com', password: '123', nombre: 'Pedro Gómez', foto: 'imgs/Usuarios/hom3.jpg' },
+    
     // Inquilinos
-    { email: 'inquilino1@mail.com', password: '123', nombre: 'Ana Inq', foto: '' },
-    { email: 'inquilino2@mail.com', password: '123', nombre: 'Luis Inq', foto: '' },
-    { email: 'inquilino3@mail.com', password: '123', nombre: 'Sofia Inq', foto: '' },
-    { email: 'inquilino4@mail.com', password: '123', nombre: 'Carlos Inq', foto: '' }
+    { email: 'anagarcia@mail.com', password: '123', nombre: 'Ana García', foto: 'imgs/Usuarios/muj2.jpg' },
+    { email: 'luismartinez@mail.com', password: '123', nombre: 'Luis Martínez', foto: 'imgs/Usuarios/hom4.jpg' },
+    { email: 'sofiaruiz@mail.com', password: '123', nombre: 'Sofía Ruiz', foto: 'imgs/Usuarios/muj3.jpg' },
+    { email: 'carlossanchez@mail.com', password: '123', nombre: 'Carlos Sánchez', foto: 'imgs/Usuarios/hom5.jpg' }
 ];
 
-// Requisito: 14 habitaciones (10 Vitoria, 2 Bilbao, 2 Donostia) 
-// Campos: idHabi, direccion, lat (double), lon (double), precio, imagen (base64), emailPropietario (FK)
 const datosHabitaciones = [
     // --- VITORIA (10 habitaciones) ---
-    { idHabi: 1, ciudad: 'Vitoria', direccion: 'Calle Dato 1', lat: 42.846, lon: -2.672, precio: 300, imagen: 'imgs/Habitaciones/hab1.jpg', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 2, ciudad: 'Vitoria', direccion: 'Av. Gasteiz 45', lat: 42.850, lon: -2.675, precio: 250, imagen: 'imgs/Habitaciones/hab2.jpg', emailPropietario: 'propietario1@mail.com' },
-    { idHabi: 3, ciudad: 'Vitoria', direccion: 'Calle San Prudencio', lat: 42.847, lon: -2.670, precio: 350, imagen: 'imgs/Habitaciones/hab3.jpg', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 4, ciudad: 'Vitoria', direccion: 'Calle Francia', lat: 42.848, lon: -2.668, precio: 280, imagen: 'imgs/Habitaciones/hab4.jpg', emailPropietario: 'propietario2@mail.com' },
-    { idHabi: 5, ciudad: 'Vitoria', direccion: 'Calle La Paz', lat: 42.845, lon: -2.669, precio: 320, imagen: 'imgs/Habitaciones/hab5.jpg', emailPropietario: 'propietario3@mail.com' },
-    { idHabi: 6, ciudad: 'Vitoria', direccion: 'Calle Florida', lat: 42.844, lon: -2.671, precio: 310, imagen: 'imgs/Habitaciones/hab6.jpg', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 7, ciudad: 'Vitoria', direccion: 'Calle Gorbea', lat: 42.851, lon: -2.678, precio: 290, imagen: 'imgs/Habitaciones/hab7.jpg', emailPropietario: 'propietario1@mail.com' },
-    { idHabi: 8, ciudad: 'Vitoria', direccion: 'Avenida Santiago', lat: 42.849, lon: -2.665, precio: 260, imagen: 'imgs/Habitaciones/hab8.jpg', emailPropietario: 'propietario2@mail.com' },
-    { idHabi: 9, ciudad: 'Vitoria', direccion: 'Portal de Castilla', lat: 42.843, lon: -2.680, precio: 300, imagen: 'imgs/Habitaciones/hab9.jpg', emailPropietario: 'propietario3@mail.com' },
-    { idHabi: 10, ciudad: 'Vitoria', direccion: 'Calle Prado', lat: 42.846, lon: -2.674, precio: 400, imagen: 'imgs/Habitaciones/hab10.jpg', emailPropietario: 'mco@deusto.es' },
+    // Propietario: mco@deusto.es
+    { idHabi: 1, ciudad: 'Vitoria', direccion: 'Calle Dato 1', lat: 42.846, lon: -2.672, precio: 300, imagen: 'imgs/Habitaciones/hab1.jpg', emailPropietario: 'pemiliogarcia@mail.com' },
+    { idHabi: 3, ciudad: 'Vitoria', direccion: 'Calle San Prudencio', lat: 42.847, lon: -2.670, precio: 350, imagen: 'imgs/Habitaciones/hab3.jpg', emailPropietario: 'pemiliogarcia@mail.com' },
+    { idHabi: 6, ciudad: 'Vitoria', direccion: 'Calle Florida', lat: 42.844, lon: -2.671, precio: 310, imagen: 'imgs/Habitaciones/hab6.jpg', emailPropietario: 'pemiliogarcia@mail.com' },
+    { idHabi: 10, ciudad: 'Vitoria', direccion: 'Calle Prado', lat: 42.846, lon: -2.674, precio: 400, imagen: 'imgs/Habitaciones/hab10.jpg', emailPropietario: 'pemiliogarcia@mail.com' },
+
+    // Propietario: Juan Pérez (pjuanperez@mail.com)
+    { idHabi: 2, ciudad: 'Vitoria', direccion: 'Av. Gasteiz 45', lat: 42.850, lon: -2.675, precio: 250, imagen: 'imgs/Habitaciones/hab2.jpg', emailPropietario: 'pjuanperez@mail.com' },
+    { idHabi: 7, ciudad: 'Vitoria', direccion: 'Calle Gorbea', lat: 42.851, lon: -2.678, precio: 290, imagen: 'imgs/Habitaciones/hab7.jpg', emailPropietario: 'pjuanperez@mail.com' },
+
+    // Propietario: María López (pmarialopez@mail.com)
+    { idHabi: 4, ciudad: 'Vitoria', direccion: 'Calle Francia', lat: 42.848, lon: -2.668, precio: 280, imagen: 'imgs/Habitaciones/hab4.jpg', emailPropietario: 'pmarialopez@mail.com' },
+    { idHabi: 8, ciudad: 'Vitoria', direccion: 'Avenida Santiago', lat: 42.849, lon: -2.665, precio: 260, imagen: 'imgs/Habitaciones/hab8.jpg', emailPropietario: 'pmarialopez@mail.com' },
+
+    // Propietario: Pedro Gómez (ppedrogomez@mail.com)
+    { idHabi: 5, ciudad: 'Vitoria', direccion: 'Calle La Paz', lat: 42.845, lon: -2.669, precio: 320, imagen: 'imgs/Habitaciones/hab5.jpg', emailPropietario: 'ppedrogomez@mail.com' },
+    { idHabi: 9, ciudad: 'Vitoria', direccion: 'Portal de Castilla', lat: 42.843, lon: -2.680, precio: 300, imagen: 'imgs/Habitaciones/hab9.jpg', emailPropietario: 'ppedrogomez@mail.com' },
 
     // --- BILBAO (2 habitaciones) ---
-    { idHabi: 11, ciudad: 'Bilbao', direccion: 'Gran Vía 10', lat: 43.263, lon: -2.935, precio: 450, imagen: 'imgs/Habitaciones/hab11.jpg', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 12, ciudad: 'Bilbao', direccion: 'Casco Viejo 2', lat: 43.258, lon: -2.923, precio: 400, imagen: 'imgs/Habitaciones/hab12.jpg', emailPropietario: 'propietario1@mail.com' },
+    { idHabi: 11, ciudad: 'Bilbao', direccion: 'Gran Vía 10', lat: 43.263, lon: -2.935, precio: 450, imagen: 'imgs/Habitaciones/hab11.jpg', emailPropietario: 'pemiliogarcia@mail.com' },
+    { idHabi: 12, ciudad: 'Bilbao', direccion: 'Casco Viejo 2', lat: 43.258, lon: -2.923, precio: 400, imagen: 'imgs/Habitaciones/hab12.jpg', emailPropietario: 'pjuanperez@mail.com' },
 
     // --- DONOSTIA (2 habitaciones) ---
-    { idHabi: 13, ciudad: 'Donostia', direccion: 'La Concha 1', lat: 43.315, lon: -1.986, precio: 600, imagen: 'imgs/Habitaciones/hab13.jpg', emailPropietario: 'mco@deusto.es' },
-    { idHabi: 14, ciudad: 'Donostia', direccion: 'Gros 5', lat: 43.322, lon: -1.976, precio: 550, imagen: 'imgs/Habitaciones/hab14.jpg', emailPropietario: 'propietario1@mail.com' }
+    { idHabi: 13, ciudad: 'Donostia', direccion: 'La Concha 1', lat: 43.315, lon: -1.986, precio: 600, imagen: 'imgs/Habitaciones/hab13.jpg', emailPropietario: 'pemiliogarcia@mail.com' },
+    { idHabi: 14, ciudad: 'Donostia', direccion: 'Gros 5', lat: 43.322, lon: -1.976, precio: 550, imagen: 'imgs/Habitaciones/hab14.jpg', emailPropietario: 'pjuanperez@mail.com' }
 ];
 
-// Requisito: Datos para pruebas de Alquiler 
-// Campos: idContrato, idHabi (FK), emailInqui (FK), fIni, fFin
 const datosAlquileres = [
-    // Alquiler activo
-    { idContrato: 1, idHabi: 1, emailInqui: 'inquilino1@mail.com', fIni: '2025-01-01', fFin: '2025-12-31' },
-    // Alquiler finalizado (pasado)
-    { idContrato: 2, idHabi: 2, emailInqui: 'inquilino2@mail.com', fIni: '2025-11-18', fFin: '2026-02-28' },
-     // Alquiler futuro
-    { idContrato: 3, idHabi: 11, emailInqui: 'inquilino1@mail.com', fIni: '2025-12-01', fFin: '2026-06-01' }
+    // Inquilino: Ana García (ana.garcia@mail.com)
+    { idContrato: 1, idHabi: 1, emailInqui: 'anagarcia@mail.com', fIni: '2025-01-01', fFin: '2025-12-31' },
+    { idContrato: 3, idHabi: 11, emailInqui: 'anagarcia@mail.com', fIni: '2025-12-01', fFin: '2026-06-01' },
+
+    // Inquilino: Luis Martínez (luis.martinez@mail.com)
+    { idContrato: 2, idHabi: 2, emailInqui: 'luismartinez@mail.com', fIni: '2025-11-18', fFin: '2026-02-28' }
 ];
 
-// Requisito: Datos para pruebas de Solicitudes 
-// Campos: idSolicitud, idHabi (FK), emailInquiPosible (FK)
 const datosSolicitudes = [
-    { idSolicitud: 1, idHabi: 13, emailInquiPosible: 'inquilino3@mail.com' },
-    { idSolicitud: 2, idHabi: 13, emailInquiPosible: 'inquilino4@mail.com' },
-    { idSolicitud: 3, idHabi: 14, emailInquiPosible: 'inquilino1@mail.com' }
+    { idSolicitud: 1, idHabi: 13, emailInquiPosible: 'sofiaruiz@mail.com' },
+    { idSolicitud: 2, idHabi: 13, emailInquiPosible: 'carlossanchez@mail.com' },
+    { idSolicitud: 3, idHabi: 14, emailInquiPosible: 'anagarcia@mail.com' }
 ];
