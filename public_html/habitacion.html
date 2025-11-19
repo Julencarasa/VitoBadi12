@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Habitación - VitoBadi</title>
+    <!-- Vinculamos el CSS específico -->
+    <link rel="stylesheet" href="css/habitacion.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="header-title">
+                <!-- El enlace del logo se decidirá en el JS (BuscadorAnonimo o BuscadorLogeado) -->
+                <a href="#" id="logo-link">
+                    <img src="imgs/VitoBadi Logo.png" alt="VitoBadi" class="header-logo-img">
+                </a>
+            </h1>
+            <nav class="header-nav">
+                <!-- Botón Volver inteligente (historial) -->
+                <button id="btn-volver" class="btn btn-outline">Volver</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container detail-container">
+            
+            <!-- ZONA IZQUIERDA: IMAGEN GRANDE -->
+            <div class="detail-image-box">
+                <!-- La imagen tendrá filtro borroso si es anónimo -->
+                <img id="room-image" src="" alt="Cargando foto..." class="room-big-image" onerror="this.src='imgs/VitoBadi Logo.png'">
+                <div class="price-tag" id="room-price">--- €</div>
+            </div>
+
+            <!-- ZONA DERECHA: INFORMACIÓN -->
+            <div class="detail-info-box">
+                <h2 id="room-address">Cargando dirección...</h2>
+                <p class="city-tag" id="room-city">---</p>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Latitud</strong>
+                        <span id="room-lat">---</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Longitud</strong>
+                        <span id="room-lon">---</span>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="owner-info">
+                    <h3>Contacto del Propietario</h3>
+                    <p><strong>Nombre:</strong> <span id="owner-name">---</span></p>
+                    <p><strong>Email:</strong> <span id="owner-email">---</span></p>
+                </div>
+
+                <!-- ÁREA DE ACCIÓN -->
+                <!-- Aquí JS inyectará el botón de "Alquilar" o el aviso de "Debes loguearte" -->
+                <div id="action-area" class="action-area"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><b>Hector Carrera y Julen Carasa</b> &copy; 2025</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <!-- Primero la base de datos, luego la lógica de esta página -->
+    <script src="js/vitobadi12.js"></script>
+    <script src="js/habitacion.js"></script>
+
+</body>
+</html>

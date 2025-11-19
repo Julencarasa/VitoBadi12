@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                ================================================================ */
             card.addEventListener('click', () => {
                 // Queremos ver el detalle de esta habitación concreta
-                const destinoDetalle = `index.html?id=${hab.idHabi}`;
+                const destinoDetalle = `habitacion.html?id=${hab.idHabi}`;
                 sessionStorage.setItem('destinoPendiente', destinoDetalle);
                 window.location.href = 'login.html';
             });

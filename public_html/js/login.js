@@ -1,12 +1,13 @@
 /**
- * js/login.js - Con protección anti-autoalquiler para propietarios
+ * js/login.js - Versión Final con Redirección por Ticket y Protección Anti-Autoalquiler
  */
 document.addEventListener('DOMContentLoaded', () => {
     
     const loginForm = document.getElementById('login-form');
     const errorDiv = document.getElementById('error-message');
 
-    // Limpiamos sesión previa (pero NO el destino pendiente)
+    // Limpiamos la sesión anterior (logout implícito) al cargar el login
+    // PERO NO borramos 'destinoPendiente' porque lo necesitamos para redirigir
     sessionStorage.removeItem('currentUser');
 
     if (loginForm) {
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const db = await abrirBD(); 
                 
-                // Transacción de USUARIO (Login)
+                // 1. BUSCAR USUARIO
                 const txUser = db.transaction(['usuario'], 'readonly');
                 const storeUser = txUser.objectStore('usuario');
                 const request = storeUser.get(emailInput);
@@ -32,52 +33,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 request.onsuccess = async () => {
                     const usuario = request.result;
 
-                    // 1. VERIFICAR CREDENCIALES
+                    // 2. VERIFICAR CREDENCIALES
                     if (usuario && usuario.password === passInput) {
                         
-                        // Guardar sesión
+                        // Guardar sesión (JSON completo como pide el requisito)
                         const usuarioSession = { ...usuario };
-                        delete usuarioSession.password;
+                        // Nota: El requisito pide guardar password, así que lo dejamos.
+                        
                         sessionStorage.setItem(usuario.email, JSON.stringify(usuarioSession));
                         sessionStorage.setItem('currentUser', usuario.email);
 
-                        // 2. LÓGICA DE REDIRECCIÓN CON PROTECCIÓN
+                        // 3. LÓGICA DE REDIRECCIÓN INTELIGENTE
                         const destinoPendiente = sessionStorage.getItem('destinoPendiente');
-                        let urlFinal = 'BuscadorLogeado.html'; // Destino por defecto
+                        let urlFinal = 'BuscadorLogeado.html'; // Destino por defecto si no hay ticket
 
                         if (destinoPendiente) {
-                            // CASO A: Intenta ver una habitación específica
-                            if (destinoPendiente.includes('index.html?id=')) {
+                            
+                            // CASO A: El usuario quería ver el detalle de una habitación
+                            // Ahora buscamos 'habitacion.html' en lugar de 'index.html'
+                            if (destinoPendiente.includes('habitacion.html?id=')) {
                                 try {
-                                    // Extraemos el ID de la habitación de la URL
+                                    // Extraer el ID de la URL guardada
                                     const urlParams = new URLSearchParams(destinoPendiente.split('?')[1]);
                                     const idHabi = parseInt(urlParams.get('id'));
 
-                                    // Nueva transacción para consultar la habitación
+                                    // Abrir transacción para consultar la habitación
                                     const txHab = db.transaction(['habitacion'], 'readonly');
                                     const storeHab = txHab.objectStore('habitacion');
                                     
-                                    // Promesa para obtener la habitación
                                     const habitacion = await new Promise((resolve) => {
                                         const reqHab = storeHab.get(idHabi);
                                         reqHab.onsuccess = () => resolve(reqHab.result);
                                         reqHab.onerror = () => resolve(null);
                                     });
 
-                                    // ¿SOY YO EL DUEÑO?
+                                    // VERIFICACIÓN DE PROPIEDAD
+                                    // Si soy el dueño, NO me dejes ir a la pantalla de alquiler
                                     if (habitacion && habitacion.emailPropietario === usuario.email) {
                                         console.warn("Acceso redirigido: Eres el propietario de esta habitación.");
-                                        // No le dejamos ir a index.html, se va al menú principal
                                         urlFinal = 'BuscadorLogeado.html';
                                     } else {
-                                        // No es el dueño, puede verla
+                                        // No soy el dueño, puedo verla
                                         urlFinal = destinoPendiente;
                                     }
 
                                 } catch (err) {
                                     console.error("Error verificando propiedad:", err);
-                                    // Ante la duda, al menú principal
-                                    urlFinal = 'BuscadorLogeado.html';
+                                    urlFinal = 'BuscadorLogeado.html'; // Ante error, ir a lo seguro
                                 }
                             } 
                             // CASO B: Es una redirección de búsqueda (ResultadosLogeado.html)
@@ -89,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             sessionStorage.removeItem('destinoPendiente');
                         }
 
-                        // 3. EJECUTAR LA REDIRECCIÓN FINAL
+                        // 4. EJECUTAR REDIRECCIÓN
                         console.log("Redirigiendo a:", urlFinal);
                         window.location.href = urlFinal;
 

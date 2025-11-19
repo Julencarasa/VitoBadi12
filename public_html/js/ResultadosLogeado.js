@@ -1,7 +1,5 @@
-/* js/ResultadosLogeado.js */
-
 document.addEventListener('DOMContentLoaded', async () => {
-    // Verificación de seguridad
+    // Seguridad
     const currentUserEmail = sessionStorage.getItem('currentUser');
     if (!currentUserEmail) {
         window.location.href = 'login.html';
@@ -22,9 +20,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const fechaBusqueda = new Date(fechaBuscadaStr);
-    if (titulo) titulo.textContent = `Habitaciones disponibles en ${ciudadBuscada}`;
+    if (titulo) titulo.textContent = `Habitaciones en ${ciudadBuscada} (Usuario Registrado)`;
 
-    /* --- CAMBIO DE FONDO --- */
+    // Fondo dinámico
     const mainContent = document.querySelector('.main-content');
     const imagenesFondo = {
         'Vitoria': 'imgs/fondoVitoria.jpg',
@@ -52,38 +50,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             storeAlq.getAll().onerror = () => resolve([]);
         });
 
-        // FILTRADO COMPLETO
+        // FILTRADO
         const habitacionesDisponibles = habitaciones.filter(hab => {
-            
-            /* --- NUEVO FILTRO: NO MOSTRAR MIS PROPIAS HABITACIONES --- */
-            // Si soy el dueño, devuelvo false para que NO salga en la lista
+            // 1. NO MOSTRAR MIS PROPIAS HABITACIONES
             if (hab.emailPropietario === currentUserEmail) {
                 return false; 
             }
-            /* --------------------------------------------------------- */
-
-            // Filtro de fechas (igual que antes)
+            // 2. FILTRO DE FECHAS
             const estaOcupada = alquileres.some(alq => {
                 if (alq.idHabi !== hab.idHabi) return false;
                 const fInicio = new Date(alq.fIni);
                 const fFin = new Date(alq.fFin);
                 return (fechaBusqueda >= fInicio && fechaBusqueda <= fFin);
             });
-            
             return !estaOcupada;
         });
 
-        // Ordenar por precio
         habitacionesDisponibles.sort((a, b) => a.precio - b.precio);
 
-        // PINTAR RESULTADOS
         if (contenedor) contenedor.innerHTML = "";
 
         if (habitacionesDisponibles.length === 0) {
             if (contenedor) contenedor.style.display = 'none';
             if (mensajeVacio) mensajeVacio.style.display = 'block';
-            // Opcional: Cambiar el texto si no hay resultados porque son todas suyas
-            // document.querySelector('#mensaje-vacio p').textContent = "No hay habitaciones disponibles (o eres el propietario de todas).";
             return;
         }
 
@@ -91,27 +80,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement('div');
             card.className = 'room-card';
 
-            // Redirigir a index.html (descripción)
+            // REDIRECCIÓN A HABITACION.HTML
             card.addEventListener('click', () => {
-                window.location.href = `index.html?id=${hab.idHabi}`;
+                window.location.href = `habitacion.html?id=${hab.idHabi}`;
             });
 
             const imagenSrc = (hab.imagen && hab.imagen.length > 10) ? hab.imagen : 'imgs/VitoBadi Logo.png';
 
             card.innerHTML = `
                 <div class="img-wrapper">
+                    <!-- FOTO NÍTIDA -->
                     <img src="${imagenSrc}" alt="${hab.direccion}" class="sharp-img" onerror="this.src='imgs/VitoBadi Logo.png'">
                 </div>
                 <div class="room-info">
                     <h3 class="room-address">${hab.direccion}</h3>
-                    <p class="room-coords">
-                        Lat: ${hab.lat} | Lon: ${hab.lon}
-                    </p>
+                    <p class="room-coords">Lat: ${hab.lat} | Lon: ${hab.lon}</p>
                     <p class="room-price">${hab.precio} € / mes</p>
                     <span class="click-hint">Ver detalles completos</span>
                 </div>
             `;
-
             contenedor.appendChild(card);
         });
 
