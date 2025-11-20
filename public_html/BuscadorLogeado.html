@@ -8,16 +8,15 @@
 </head>
 <body>
 
+    <!-- HEADER PRINCIPAL (Logo y Usuario) -->
     <header class="header">
         <div class="container header-content">
-            <!-- Logo -->
             <h1 class="header-title">
                 <a href="BuscadorLogeado.html">
                     <img src="imgs/VitoBadi Logo.png" alt="VitoBadi" class="header-logo-img">
                 </a>
             </h1>
 
-            <!-- Área de Usuario (Se llena con JS) -->
             <nav class="header-nav user-nav">
                 <div class="user-info">
                     <span id="user-greeting">Cargando...</span>
@@ -28,14 +27,57 @@
         </div>
     </header>
 
+    <!-- NUEVO: SUB-HEADER CON MENÚ DESPLEGABLE -->
+    <nav class="sub-header">
+        <div class="container">
+            <ul class="nav-menu">
+                
+                <!-- 1. CONSULTAR -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Consultar</a>
+                    <div class="dropdown-content">
+                        <a href="#" id="btn-busqueda-generica">Genérico</a>
+                        <a href="#" id="btn-busqueda-geo">Geolocalización</a>
+                    </div>
+                </li>
+
+                <!-- 2. HABITACIÓN -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Habitación</a>
+                    <div class="dropdown-content">
+                        <a href="index.html">Añadir Habitación</a>
+                        <a href="index.html">Ver Mis Habitaciones</a>
+                    </div>
+                </li>
+
+                <!-- 3. SOLICITUDES -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Solicitudes</a>
+                    <div class="dropdown-content">
+                        <a href="index.html">Ver Solicitudes</a>
+                    </div>
+                </li>
+
+                <!-- 4. ALQUILERES -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Alquileres</a>
+                    <div class="dropdown-content">
+                        <a href="index.html">Ver Alquileres</a>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL (Cambia dinámicamente) -->
     <main class="main-content">
         
-        <section class="card-box search-box-width">
-            <!-- Título dinámico -->
+        <!-- VISTA 1: BUSCADOR GENÉRICO (Por defecto) -->
+        <section id="vista-generica" class="card-box search-box-width">
             <h2 id="welcome-title">Buscar Habitación</h2>
             
             <form id="search-form" class="form-inline">
-                
                 <div class="form-group">
                     <label for="ciudad">Ciudad:</label>
                     <select id="ciudad" name="ciudad" required>
@@ -55,6 +97,21 @@
             </form>
         </section>
 
+        <!-- VISTA 2: BUSCADOR GEOLOCALIZACIÓN (Oculto al inicio) -->
+        <section id="vista-geo" class="card-box search-box-width" style="display: none;">
+            <h2>Búsqueda por Geolocalización</h2>
+            <p style="margin-bottom: 20px; color: #666;">Introduce una dirección para buscar habitaciones cercanas.</p>
+            
+            <form id="geo-form" class="form-geo">
+                <div class="form-group" style="width: 100%;">
+                    <label for="direccion-geo">Dirección:</label>
+                    <input type="text" id="direccion-geo" name="direccion" placeholder="Ej: Calle Dato 1, Vitoria" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="margin-top: 15px; width: 100%;">Aceptar</button>
+            </form>
+        </section>
+
     </main>
 
     <footer class="footer">
@@ -63,7 +120,7 @@
         </div>
     </footer>
 
-    <!-- Scripts: Primero el núcleo, luego la lógica de esta página -->
+    <!-- Scripts -->
     <script src="js/vitobadi12.js"></script>
     <script src="js/BuscadorLogeado.js"></script>
 </body>

@@ -1,24 +1,20 @@
 /**
  * js/BuscadorLogeado.js
- * Gestiona la sesión del usuario, muestra sus datos en el header
- * y maneja la funcionalidad de búsqueda y logout.
+ * Gestiona la sesión del usuario, el menú desplegable y los buscadores.
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
     
     // 1. VERIFICACIÓN DE SEGURIDAD
-    // Obtenemos el email del usuario actual guardado en login.js
     const currentUserEmail = sessionStorage.getItem('currentUser');
 
     if (!currentUserEmail) {
-        // Si no hay sesión, patada al buscador anónimo o login
         alert("Acceso denegado. Debes iniciar sesión.");
         window.location.href = 'login.html';
         return;
     }
 
-    // 2. RECUPERAR DATOS COMPLETOS DEL USUARIO
-    // Intentamos coger el objeto completo del session storage
+    // 2. RECUPERAR DATOS DEL USUARIO
     let usuario = null;
     try {
         const userString = sessionStorage.getItem(currentUserEmail);
@@ -32,52 +28,103 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 3. ACTUALIZAR LA INTERFAZ (HEADER)
     const greeting = document.getElementById('user-greeting');
     const photo = document.getElementById('user-photo');
-    const welcomeTitle = document.getElementById('welcome-title');
-
+    
     if (usuario) {
-        // Poner nombre
         greeting.textContent = `Bienvenido, ${usuario.nombre}`;
         
-        // Poner foto (si tiene base64 válido, sino placeholder)
         if (usuario.foto && usuario.foto.length > 10) {
             photo.src = usuario.foto;
         } else {
-            // Foto por defecto si el usuario no tiene
             photo.src = 'imgs/user_placeholder.png'; 
         }
     } else {
         greeting.textContent = `Bienvenido, ${currentUserEmail}`;
     }
 
-    // 4. LOGICA DE LOGOUT
+    // 4. LÓGICA DE LOGOUT
     document.getElementById('btn-logout').addEventListener('click', () => {
-        // Borramos la sesión
         sessionStorage.clear();
-        // Redirigimos a la parte pública
         window.location.href = 'BuscadorAnonimo.html';
     });
 
-    // 5. LÓGICA DEL BUSCADOR (Igual que el anónimo, pero podríamos redirigir a resultados diferentes)
-    const form = document.getElementById('search-form');
+    /* =========================================================
+       5. GESTIÓN DEL MENÚ DESPLEGABLE (CAMBIO DE VISTAS)
+       ========================================================= */
+    const btnGenerico = document.getElementById('btn-busqueda-generica');
+    const btnGeo = document.getElementById('btn-busqueda-geo');
+    
+    const seccionGenerica = document.getElementById('vista-generica');
+    const seccionGeo = document.getElementById('vista-geo');
+
+    // Función para cambiar de pestaña
+    function mostrarSeccion(seccionAMostrar) {
+        // Ocultamos ambas primero
+        seccionGenerica.style.display = 'none';
+        seccionGeo.style.display = 'none';
+        
+        // Mostramos la elegida con una pequeña animación de entrada (definida en CSS)
+        seccionAMostrar.style.display = 'block';
+    }
+
+    // Eventos del menú
+    if (btnGenerico) {
+        btnGenerico.addEventListener('click', (e) => {
+            e.preventDefault(); // Evita que el enlace recargue
+            mostrarSeccion(seccionGenerica);
+        });
+    }
+
+    if (btnGeo) {
+        btnGeo.addEventListener('click', (e) => {
+            e.preventDefault();
+            mostrarSeccion(seccionGeo);
+        });
+    }
+
+    /* =========================================================
+       6. LÓGICA DEL BUSCADOR GENÉRICO
+       ========================================================= */
+    const formGenerico = document.getElementById('search-form');
+    const fechaInput = document.getElementById('fecha');
     
     // Bloquear fechas pasadas
-    const fechaInput = document.getElementById('fecha');
     const hoy = new Date().toISOString().split('T')[0];
-    fechaInput.setAttribute('min', hoy);
+    if (fechaInput) fechaInput.setAttribute('min', hoy);
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const ciudad = document.getElementById('ciudad').value;
-        const fecha = fechaInput.value;
+    if (formGenerico) {
+        formGenerico.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const ciudad = document.getElementById('ciudad').value;
+            const fecha = fechaInput.value;
 
-        if (ciudad && fecha) {
-            // Aquí podrías redirigir a 'ResultadosLogeado.html' si esa página va a ser distinta
-            // (por ejemplo, mostrando fotos nítidas y botones de alquilar)
-            // De momento, enviamos a la misma de resultados pero quizás quieras añadir un parámetro '&user=1'
-            window.location.href = `resultadosLogeado.html?ciudad=${encodeURIComponent(ciudad)}&fecha=${encodeURIComponent(fecha)}`;
-        } else {
-            alert("Por favor rellena todos los campos");
-        }
-    });
+            if (ciudad && fecha) {
+                // Redirigimos a ResultadosLogeado.html
+                window.location.href = `ResultadosLogeado.html?ciudad=${encodeURIComponent(ciudad)}&fecha=${encodeURIComponent(fecha)}`;
+            } else {
+                alert("Por favor rellena todos los campos");
+            }
+        });
+    }
+
+    /* =========================================================
+       7. LÓGICA DEL BUSCADOR GEOLOCALIZACIÓN
+       ========================================================= */
+    const formGeo = document.getElementById('geo-form');
+
+    if (formGeo) {
+        formGeo.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const direccion = document.getElementById('direccion-geo').value;
+
+            if (direccion) {
+                alert("Funcionalidad de mapa en construcción. Redirigiendo a inicio...");
+                // Aquí iría la lógica para obtener lat/lon y mandar al mapa
+                // De momento, redirige a index.html como pediste
+                window.location.href = 'index.html'; 
+            } else {
+                alert("Por favor, introduce una dirección.");
+            }
+        });
+    }
 });

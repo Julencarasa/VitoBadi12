@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const fechaBusqueda = new Date(fechaBuscadaStr);
-    if (titulo) titulo.textContent = `Habitaciones en ${ciudadBuscada} (Usuario Registrado)`;
+    if (titulo) titulo.textContent = `Habitaciones disponibles en ${ciudadBuscada}`;
 
     // Fondo dinámico
     const mainContent = document.querySelector('.main-content');
