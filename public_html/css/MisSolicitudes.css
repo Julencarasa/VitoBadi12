@@ -1,0 +1,161 @@
+/* css/MisSolicitudes.css */
+
+/* Ajuste para que el main permita contenido en columna (no solo centrado vertical) */
+.column-layout {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 40px;
+}
+
+.wide-box {
+    max-width: 1000px; /* Más ancho que el buscador */
+    text-align: left;  /* Alineación interna natural */
+}
+
+.subtitle {
+    color: #777;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.active-link {
+    color: var(--color-primary) !important;
+    border-bottom: 3px solid var(--color-primary);
+}
+
+/* --- LISTA DE TARJETAS --- */
+.request-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.req-item {
+    display: flex;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    background: #fff;
+    transition: box-shadow 0.2s;
+}
+
+.req-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.req-img {
+    width: 120px;
+    height: 100px; /* Fijo para consistencia */
+    object-fit: cover;
+}
+
+.req-info {
+    padding: 10px 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.req-address {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.req-price {
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
+.req-status {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* Botón de acción en la tarjeta */
+.req-action {
+    display: flex;
+    align-items: center;
+    padding-right: 15px;
+}
+
+.btn-ver-candidatos {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-ver-candidatos:hover {
+    background-color: #34495e;
+}
+
+.empty-msg {
+    text-align: center;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    color: #666;
+    font-style: italic;
+}
+
+/* --- MODAL --- */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+}
+.close-btn:hover { color: #333; }
+
+.candidates-list {
+    margin-top: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.candidate-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.candidate-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
