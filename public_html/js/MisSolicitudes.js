@@ -28,6 +28,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'BuscadorAnonimo.html';
     });
 
+    // --- CONFIGURACIÓN DEL MODAL (Cerrar) ---
+    // Lo configuramos aquí una sola vez para asegurar que funcione siempre
+    const modal = document.getElementById('modal-inquilinos');
+    const closeBtn = document.querySelector('.close-btn');
+
+    // Cerrar con la X
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // Cerrar haciendo clic fuera del contenido
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+
     // 3. CARGA DE DATOS
     try {
         const db = await abrirBD();
@@ -36,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await cargarEnviadas(db, currentUserEmail);
 
         // B) CARGAR SOLICITUDES RECIBIDAS (Propietario)
-        // Primero verificamos si el usuario tiene habitaciones
+        // Usamos una transacción para buscar las habitaciones
         const txHab = db.transaction(['habitacion'], 'readonly');
         const storeHab = txHab.objectStore('habitacion');
         const indexProp = storeHab.index('fk_email_prop');
@@ -46,7 +64,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         misHabitacionesReq.onsuccess = async () => {
             const misHabitaciones = misHabitacionesReq.result;
             if (misHabitaciones.length > 0) {
-                // Mostrar sección y cargar datos
                 document.getElementById('sec-recibidas').style.display = 'block';
                 await cargarRecibidas(db, misHabitaciones);
             }
@@ -68,7 +85,6 @@ async function cargarEnviadas(db, emailUser) {
     const storeSol = tx.objectStore('solicitud');
     const indexInqui = storeSol.index('fk_inquilino');
 
-    // Obtener solicitudes donde soy inquilino
     const solicitudes = await new Promise(resolve => {
         indexInqui.getAll(emailUser).onsuccess = (e) => resolve(e.target.result);
     });
@@ -81,7 +97,6 @@ async function cargarEnviadas(db, emailUser) {
     const storeHab = tx.objectStore('habitacion');
 
     for (const sol of solicitudes) {
-        // Obtener detalle de la habitación
         const habitacion = await new Promise(resolve => {
             storeHab.get(sol.idHabi).onsuccess = (e) => resolve(e.target.result);
         });
@@ -107,10 +122,10 @@ async function cargarRecibidas(db, habitaciones) {
     const msgEmpty = document.getElementById('msg-no-recibidas');
     let haySolicitudes = false;
 
-    const tx = db.transaction(['solicitud', 'usuario'], 'readonly');
+    // Nota: Aquí NO obtenemos el store de 'usuario' todavía porque la transacción caducaría
+    const tx = db.transaction(['solicitud'], 'readonly');
     const storeSol = tx.objectStore('solicitud');
     const indexSolHab = storeSol.index('fk_habitacion');
-    const storeUser = tx.objectStore('usuario'); // Para datos de inquilinos
 
     for (const hab of habitaciones) {
         // Ver si esta habitación tiene solicitudes
@@ -118,11 +133,7 @@ async function cargarRecibidas(db, habitaciones) {
             indexSolHab.getAll(hab.idHabi).onsuccess = (e) => resolve(e.target.result);
         });
 
-        // Pintar la tarjeta de la habitación (incluso si tiene 0 solicitudes, 
-        // aunque el enunciado sugiere mostrar "si hay o no solicitudes")
-        // Para que no quede muy lleno, mostramos solo las que tienen solicitudes O un botón "0 solicitudes"
-        
-        // Vamos a pintar la fila de la habitación
+        // Crear elemento visual
         const div = document.createElement('div');
         div.className = 'req-item';
         
@@ -142,12 +153,13 @@ async function cargarRecibidas(db, habitaciones) {
         `;
         
         container.appendChild(div);
-        haySolicitudes = true; // Al menos pintamos habitaciones propias
+        haySolicitudes = true; 
 
         // Evento botón
         if (solicitudes.length > 0) {
             const btn = div.querySelector('.btn-ver-candidatos');
-            btn.addEventListener('click', () => abrirModal(solicitudes, storeUser));
+            // CORRECCIÓN: Pasamos 'db' en lugar de un 'store' viejo
+            btn.addEventListener('click', () => abrirModal(db, solicitudes));
         }
     }
 
@@ -157,16 +169,20 @@ async function cargarRecibidas(db, habitaciones) {
 }
 
 // --- MODAL ---
-async function abrirModal(solicitudes, storeUser) {
+async function abrirModal(db, solicitudes) {
     const modal = document.getElementById('modal-inquilinos');
     const listContainer = document.getElementById('lista-candidatos');
-    const closeBtn = document.querySelector('.close-btn');
 
     listContainer.innerHTML = '<p>Cargando datos...</p>';
-    modal.style.display = 'flex'; // Usamos flex para centrar
+    modal.style.display = 'flex';
 
-    // Cargar datos de usuarios
+    // CORRECCIÓN: Creamos una NUEVA transacción aquí mismo, en el momento del click
+    const tx = db.transaction(['usuario'], 'readonly');
+    const storeUser = tx.objectStore('usuario');
+
     listContainer.innerHTML = '';
+    
+    // Iteramos solicitudes y buscamos cada usuario
     for (const sol of solicitudes) {
         const usuario = await new Promise(resolve => {
             storeUser.get(sol.emailInquiPosible).onsuccess = (e) => resolve(e.target.result);
@@ -185,8 +201,4 @@ async function abrirModal(solicitudes, storeUser) {
             listContainer.appendChild(row);
         }
     }
-
-    // Cerrar
-    closeBtn.onclick = () => modal.style.display = 'none';
-    window.onclick = (e) => { if(e.target == modal) modal.style.display = 'none'; }
 }
