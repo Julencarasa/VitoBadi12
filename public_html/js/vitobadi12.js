@@ -129,10 +129,10 @@ const datosHabitaciones = [
 const datosAlquileres = [
     // Inquilino: Ana García (ana.garcia@mail.com)
     { idContrato: 1, idHabi: 1, emailInqui: 'anagarcia@mail.com', fIni: '2025-01-01', fFin: '2025-12-31' },
-    { idContrato: 3, idHabi: 11, emailInqui: 'anagarcia@mail.com', fIni: '2025-12-01', fFin: '2026-06-01' },
+    { idContrato: 3, idHabi: 11, emailInqui: 'anagarcia@mail.com', fIni: '2024-12-01', fFin: '2025-06-01' },
 
     // Inquilino: Luis Martínez (luis.martinez@mail.com)
-    { idContrato: 2, idHabi: 2, emailInqui: 'luismartinez@mail.com', fIni: '2025-11-18', fFin: '2026-02-28' }
+    { idContrato: 2, idHabi: 2, emailInqui: 'pemiliogarcia@mail.com', fIni: '2025-11-18', fFin: '2026-02-28' }
 ];
 
 const datosSolicitudes = [

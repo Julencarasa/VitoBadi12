@@ -1,0 +1,127 @@
+/* Heredamos estilos base de Buscador y Solicitudes */
+
+.column-layout {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 40px;
+}
+
+.wide-box {
+    max-width: 1000px;
+    width: 95%;
+    text-align: left;
+}
+
+.subtitle {
+    color: #777;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.active-link {
+    color: var(--color-primary) !important;
+    border-bottom: 3px solid var(--color-primary);
+}
+
+/* --- LISTAS --- */
+.rental-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.rental-item {
+    display: flex;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.rental-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.rental-img {
+    width: 160px;
+    height: 130px;
+    object-fit: cover;
+}
+
+.rental-info {
+    padding: 15px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.rental-address {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.rental-price {
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.rental-details {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+.rental-dates {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #777;
+    background: #f9f9f9;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* --- ESTILOS ESPECIFICOS PROPIETARIO --- */
+.status-title {
+    font-size: 1.1rem;
+    margin: 20px 0 15px 0;
+}
+
+.active-title { color: #2ecc71; }
+.inactive-title { color: #e74c3c; }
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #eee;
+    margin: 30px 0;
+}
+
+.empty-msg {
+    text-align: center;
+    padding: 15px;
+    color: #999;
+    font-style: italic;
+    background: #fafafa;
+    border-radius: 5px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .rental-item {
+        flex-direction: column;
+    }
+    .rental-img {
+        width: 100%;
+        height: 150px;
+    }
+}

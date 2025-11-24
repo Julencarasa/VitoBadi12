@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Solicitudes - VitoBadi</title>
+    <title>Mis Alquileres - VitoBadi</title>
     <link rel="stylesheet" href="css/BuscadorLogeado.css">
-    <link rel="stylesheet" href="css/MisSolicitudes.css">
+    <link rel="stylesheet" href="css/VerAlquileres.css">
 </head>
 <body>
 
@@ -31,9 +31,6 @@
             <ul class="nav-menu">
                 <li class="nav-item dropdown">
                     <a href="BuscadorLogeado.html" class="nav-link">Consultar</a>
-                    <div class="dropdown-content">
-                        <a href="BuscadorLogeado.html">Ir al Buscador</a>
-                    </div>
                 </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link">Habitación</a>
@@ -43,12 +40,13 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link active-link">Solicitudes</a> <div class="dropdown-content">
+                    <a href="#" class="nav-link">Solicitudes</a>
+                    <div class="dropdown-content">
                         <a href="MisSolicitudes.html">Ver Solicitudes</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Alquileres</a>
+                    <a href="#" class="nav-link active-link">Alquileres</a>
                     <div class="dropdown-content">
                         <a href="VerAlquileres.html">Ver Alquileres</a>
                     </div>
@@ -59,33 +57,28 @@
 
     <main class="main-content column-layout">
         
-        <section class="card-box wide-box">
-            <h2>Solicitudes Enviadas</h2>
-            <p class="subtitle">Habitaciones que te interesa alquilar</p>
-            
-            <div id="lista-enviadas" class="request-list">
-                </div>
-            <p id="msg-no-enviadas" class="empty-msg" style="display:none;">No has enviado ninguna solicitud.</p>
+        <section id="sec-inquilino" class="card-box wide-box" style="display:none;">
+            <h2>Mis Alquileres (Como Inquilino)</h2>
+            <p class="subtitle">Historial de habitaciones donde te has alojado.</p>
+            <div id="lista-inquilino" class="rental-list"></div>
+            <p id="msg-no-inquilino" class="empty-msg" style="display:none;">No tienes alquileres registrados.</p>
         </section>
 
-        <section id="sec-recibidas" class="card-box wide-box" style="display:none; margin-top: 30px;">
-            <h2>Solicitudes Recibidas</h2>
-            <p class="subtitle">Gente interesada en tus propiedades</p>
+        <section id="sec-propietario" class="card-box wide-box" style="display:none; margin-top: 30px;">
+            <h2>Mis Propiedades Alquiladas</h2>
             
-            <div id="lista-recibidas" class="request-list">
-                </div>
-            <p id="msg-no-recibidas" class="empty-msg" style="display:none;">No hay solicitudes pendientes en tus habitaciones.</p>
+            <h3 class="status-title active-title">🟢 Alquileres Activos (En curso)</h3>
+            <div id="lista-prop-activos" class="rental-list"></div>
+            <p id="msg-no-activos" class="empty-msg" style="display:none;">No tienes habitaciones alquiladas actualmente.</p>
+
+            <hr class="divider">
+
+            <h3 class="status-title inactive-title">🔴 Historial (Finalizados)</h3>
+            <div id="lista-prop-inactivos" class="rental-list"></div>
+            <p id="msg-no-inactivos" class="empty-msg" style="display:none;">No tienes historial de alquileres finalizados.</p>
         </section>
 
     </main>
-
-    <div id="modal-inquilinos" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h3>Posibles Inquilinos</h3>
-            <div id="lista-candidatos" class="candidates-list"></div>
-        </div>
-    </div>
 
     <footer class="footer">
         <div class="container">
@@ -94,6 +87,6 @@
     </footer>
 
     <script src="js/vitobadi12.js"></script>
-    <script src="js/MisSolicitudes.js"></script>
+    <script src="js/VerAlquileres.js"></script>
 </body>
 </html>

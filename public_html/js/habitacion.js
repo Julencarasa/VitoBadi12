@@ -1,7 +1,6 @@
 /**
  * js/habitacion.js
- * Gestiona la visualización del detalle de una habitación.
- * Controla el acceso anónimo (foto borrosa) vs registrado.
+ * Gestiona el detalle de la habitación y la lógica de solicitudes.
  */
 document.addEventListener('DOMContentLoaded', async () => {
     
@@ -24,23 +23,72 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!idHabi) {
         alert("Error: No se ha especificado ninguna habitación.");
-        // Si no hay ID, mandamos al buscador público por defecto
         window.location.href = 'BuscadorAnonimo.html';
         return;
     }
 
-    // --- 3. GESTIÓN DE SESIÓN Y UI ---
+    // --- 3. GESTIÓN DE SESIÓN ---
     const currentUserEmail = sessionStorage.getItem('currentUser');
     const isLogged = !!currentUserEmail;
 
-    if (isLogged) {
-        // === USUARIO REGISTRADO ===
+    // --- 4. CARGA PRINCIPAL DE DATOS (BD) ---
+    let habitacionData = null;
+
+    try {
+        const db = await abrirBD();
         
-        // Navegación
+        // Transacción para leer habitación y usuario propietario
+        const tx = db.transaction(['habitacion', 'usuario'], 'readonly');
+        const storeHab = tx.objectStore('habitacion');
+        const storeUser = tx.objectStore('usuario');
+        
+        // A) Obtener Habitación
+        habitacionData = await new Promise((resolve) => {
+            const req = storeHab.get(idHabi);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => resolve(null);
+        });
+
+        if (!habitacionData) {
+            alert("La habitación solicitada no existe.");
+            window.location.href = isLogged ? 'BuscadorLogeado.html' : 'BuscadorAnonimo.html';
+            return;
+        }
+
+        // B) Rellenar HTML Básico
+        if (addressEl) addressEl.textContent = habitacionData.direccion;
+        if (cityEl) cityEl.textContent = habitacionData.ciudad;
+        if (priceEl) priceEl.textContent = habitacionData.precio + " €";
+        if (latEl) latEl.textContent = habitacionData.lat;
+        if (lonEl) lonEl.textContent = habitacionData.lon;
+        if (ownerEmailEl) ownerEmailEl.textContent = habitacionData.emailPropietario;
+        
+        // C) Obtener Nombre del Propietario
+        const propietario = await new Promise((resolve) => {
+            const req = storeUser.get(habitacionData.emailPropietario);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => resolve(null);
+        });
+        if (ownerNameEl) {
+            ownerNameEl.textContent = propietario ? propietario.nombre : "Desconocido";
+        }
+
+    } catch (error) {
+        console.error("Error cargando datos:", error);
+        alert("Error de conexión con la base de datos.");
+        return; 
+    }
+
+    // --- 5. LÓGICA DE INTERFAZ (Botones y Estado) ---
+
+    if (isLogged) {
+        // === USUARIO LOGUEADO (INQUILINO) ===
+        // Asumimos que no es el propietario porque la navegación previa ya lo filtra.
+        
         logoLink.href = 'BuscadorLogeado.html';
         
+        // Configurar botón volver
         btnVolver.addEventListener('click', () => {
-            // Intentamos volver atrás manteniendo el filtro de búsqueda si existe
             if (document.referrer && document.referrer.indexOf('Resultados') !== -1) {
                 history.back();
             } else {
@@ -48,107 +96,151 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Botón de Acción (Alquilar)
-        // Inicialmente ponemos este botón, luego comprobaremos si es el dueño
-        actionArea.innerHTML = `
-            <button id="btn-alquilar" class="btn btn-primary">
-                Solicitar Alquiler
-            </button>
-        `;
+        // Imagen Normal
+        if (imgEl) {
+            imgEl.src = (habitacionData.imagen && habitacionData.imagen.length > 10) ? habitacionData.imagen : 'imgs/VitoBadi Logo.png';
+        }
+
+        // --- LÓGICA DE SOLICITUD ---
         
-        document.getElementById('btn-alquilar').addEventListener('click', () => {
-            alert(`Solicitud enviada para la habitación ${idHabi}. (Simulación)`);
+        // 1. Pintamos el botón habilitado por defecto
+        actionArea.innerHTML = `
+            <button id="btn-alquilar" class="btn btn-primary">Solicitar Alquiler</button>
+        `;
+        const btnAlquilar = document.getElementById('btn-alquilar');
+
+        // 2. Comprobamos inmediatamente si YA existe solicitud previa para bloquearlo
+        verificarEstadoSolicitud(idHabi, currentUserEmail, btnAlquilar);
+
+        // 3. Añadimos el evento de click para solicitar
+        btnAlquilar.addEventListener('click', () => {
+            realizarSolicitud(idHabi, currentUserEmail, btnAlquilar);
         });
 
     } else {
         // === USUARIO ANÓNIMO ===
-        
-        // Navegación
         logoLink.href = 'BuscadorAnonimo.html';
         btnVolver.addEventListener('click', () => window.location.href = 'BuscadorAnonimo.html');
-        
-        // REQUISITO: Foto difuminada
-        if (imgEl) imgEl.style.filter = "blur(15px)";
-        
-        // Aviso para Loguearse
+
+        // Imagen Borrosa
+        if (imgEl) {
+            imgEl.src = (habitacionData.imagen && habitacionData.imagen.length > 10) ? habitacionData.imagen : 'imgs/VitoBadi Logo.png';
+            imgEl.style.filter = "blur(15px)";
+        }
+
+        // Aviso de Login
         actionArea.innerHTML = `
             <div style="text-align: center; background: #fff3f3; padding: 15px; border-radius: 5px; border: 1px solid #ffcccc;">
                 <p style="color: #d9534f; font-weight: bold; margin-bottom: 10px;">
-                    Para ver la foto nítida y alquilar, debes iniciar sesión.
+                    Inicia sesión para ver la foto y alquilar.
                 </p>
                 <a href="#" id="btn-login-detail" class="btn btn-outline">Iniciar Sesión</a>
             </div>
         `;
 
-        // Guardar "Ticket" para volver aquí tras el login
         document.getElementById('btn-login-detail').addEventListener('click', (e) => {
             e.preventDefault();
-            // Guardamos: "Quiero volver a habitacion.html con este ID"
             sessionStorage.setItem('destinoPendiente', `habitacion.html?id=${idHabi}`);
             window.location.href = 'login.html';
         });
     }
+});
 
-    // --- 4. CARGA DE DATOS DESDE INDEXEDDB ---
+// --- FUNCIONES AUXILIARES PARA LA LÓGICA DE SOLICITUD ---
+
+/**
+ * Consulta la BD para ver si el usuario ya pidió esta habitación.
+ * Si sí, bloquea el botón visualmente.
+ */
+async function verificarEstadoSolicitud(idHabi, emailUser, btn) {
     try {
         const db = await abrirBD();
-        
-        // Transacción para leer Habitación y Usuario (para el nombre del dueño)
-        const tx = db.transaction(['habitacion', 'usuario'], 'readonly');
-        const storeHab = tx.objectStore('habitacion');
-        const storeUser = tx.objectStore('usuario');
-        
-        // A) Obtener Habitación
-        const habitacion = await new Promise((resolve, reject) => {
-            const req = storeHab.get(idHabi);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject("Error leyendo habitación");
-        });
+        const tx = db.transaction(['solicitud'], 'readonly');
+        const store = tx.objectStore('solicitud');
+        const index = store.index('fk_inquilino');
 
-        if (!habitacion) {
-            alert("La habitación solicitada no existe.");
-            window.location.href = isLogged ? 'BuscadorLogeado.html' : 'BuscadorAnonimo.html';
-            return;
-        }
+        // Obtenemos TODAS las solicitudes de este usuario
+        const request = index.getAll(emailUser);
 
-        // B) Rellenar HTML con datos
-        if (addressEl) addressEl.textContent = habitacion.direccion;
-        if (cityEl) cityEl.textContent = habitacion.ciudad;
-        if (priceEl) priceEl.textContent = habitacion.precio + " €";
-        if (latEl) latEl.textContent = habitacion.lat;
-        if (lonEl) lonEl.textContent = habitacion.lon;
-        if (ownerEmailEl) ownerEmailEl.textContent = habitacion.emailPropietario;
-        
-        // Imagen con fallback
-        if (imgEl) {
-            const imagenSrc = (habitacion.imagen && habitacion.imagen.length > 10) ? habitacion.imagen : 'imgs/VitoBadi Logo.png';
-            imgEl.src = imagenSrc;
-        }
+        request.onsuccess = () => {
+            const misSolicitudes = request.result;
+            // Buscamos si alguna es para ESTA habitación
+            const yaSolicitada = misSolicitudes.some(s => s.idHabi === idHabi);
 
-        // C) Obtener Nombre del Propietario (JOIN Manual)
-        const propietario = await new Promise((resolve) => {
-            const req = storeUser.get(habitacion.emailPropietario);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => resolve(null);
-        });
-
-        if (ownerNameEl) {
-            ownerNameEl.textContent = propietario ? propietario.nombre : "Desconocido";
-        }
-
-        // --- 5. VALIDACIÓN EXTRA: ¿SOY EL PROPIETARIO? ---
-        if (isLogged && habitacion.emailPropietario === currentUserEmail) {
-            // Si soy el dueño, quito el botón de alquilar y pongo un aviso
-            actionArea.innerHTML = `
-                <div style="background-color: #e0f7fa; color: #006064; padding: 15px; border-radius: 5px; text-align: center; border: 1px solid #b2ebf2;">
-                    <strong>Eres el propietario de esta habitación.</strong>
-                    <br>No puedes solicitar un alquiler a ti mismo.
-                </div>
-            `;
-        }
-
-    } catch (error) {
-        console.error("Error cargando detalles:", error);
-        alert("Error técnico al cargar los datos de la habitación.");
+            if (yaSolicitada) {
+                bloquearBoton(btn);
+            }
+        };
+    } catch (e) {
+        console.error("Error verificando solicitud:", e);
     }
-});
+}
+
+/**
+ * Guarda la nueva solicitud en la BD.
+ */
+async function realizarSolicitud(idHabi, emailUser, btn) {
+    try {
+        const db = await abrirBD();
+        const tx = db.transaction(['solicitud'], 'readwrite');
+        const store = tx.objectStore('solicitud');
+        
+        // 1. Doble check de seguridad (por si modificaron el HTML/JS en caliente)
+        const index = store.index('fk_inquilino');
+        const reqCheck = index.getAll(emailUser);
+
+        reqCheck.onsuccess = () => {
+            const existentes = reqCheck.result;
+            if (existentes.some(s => s.idHabi === idHabi)) {
+                alert("Ya habías solicitado esta habitación.");
+                bloquearBoton(btn);
+                return;
+            }
+
+            // 2. Calcular siguiente ID
+            const reqKeys = store.getAllKeys();
+            reqKeys.onsuccess = () => {
+                const keys = reqKeys.result;
+                // Si hay claves, cogemos la máxima y sumamos 1. Si no, empezamos en 1.
+                const nuevoId = keys.length > 0 ? Math.max(...keys) + 1 : 1;
+
+                // 3. Crear objeto
+                const nuevaSolicitud = {
+                    idSolicitud: nuevoId,
+                    idHabi: idHabi,
+                    emailInquiPosible: emailUser
+                };
+
+                // 4. Guardar
+                const reqAdd = store.add(nuevaSolicitud);
+                
+                reqAdd.onsuccess = () => {
+                    alert("¡Solicitud enviada correctamente!");
+                    bloquearBoton(btn); // Bloqueamos el botón tras el éxito
+                };
+                
+                reqAdd.onerror = (e) => {
+                    console.error(e);
+                    alert("Error al guardar la solicitud.");
+                };
+            };
+        };
+
+    } catch (e) {
+        console.error("Error al realizar solicitud:", e);
+        alert("Error de conexión.");
+    }
+}
+
+/**
+ * Cambia el estilo del botón para indicar que ya está solicitado.
+ */
+function bloquearBoton(btn) {
+    btn.textContent = "Solicitud Enviada";
+    btn.disabled = true;
+    btn.style.backgroundColor = "#ccc"; // Gris
+    btn.style.borderColor = "#ccc";
+    btn.style.color = "#666";
+    btn.style.cursor = "not-allowed";
+    btn.style.boxShadow = "none";
+}

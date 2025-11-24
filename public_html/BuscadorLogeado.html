@@ -8,7 +8,6 @@
 </head>
 <body>
 
-    <!-- HEADER PRINCIPAL (Logo y Usuario) -->
     <header class="header">
         <div class="container header-content">
             <h1 class="header-title">
@@ -27,12 +26,10 @@
         </div>
     </header>
 
-    <!-- NUEVO: SUB-HEADER CON MENÚ DESPLEGABLE -->
     <nav class="sub-header">
         <div class="container">
             <ul class="nav-menu">
                 
-                <!-- 1. CONSULTAR -->
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link">Consultar</a>
                     <div class="dropdown-content">
@@ -41,7 +38,6 @@
                     </div>
                 </li>
 
-                <!-- 2. HABITACIÓN -->
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link">Habitación</a>
                     <div class="dropdown-content">
@@ -50,20 +46,17 @@
                     </div>
                 </li>
 
-                <!-- 3. SOLICITUDES -->
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link">Solicitudes</a>
                     <div class="dropdown-content">
                         <a href="MisSolicitudes.html">Ver Solicitudes</a>
-                        
                     </div>
                 </li>
 
-                <!-- 4. ALQUILERES -->
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link">Alquileres</a>
                     <div class="dropdown-content">
-                    <a href="index.html">Ver Alquileres</a>
+                        <a href="VerAlquileres.html">Ver Alquileres</a>
                     </div>
                 </li>
 
@@ -71,10 +64,8 @@
         </div>
     </nav>
 
-    <!-- CONTENIDO PRINCIPAL (Cambia dinámicamente) -->
     <main class="main-content">
         
-        <!-- VISTA 1: BUSCADOR GENÉRICO (Por defecto) -->
         <section id="vista-generica" class="card-box search-box-width">
             <h2 id="welcome-title">Buscar Habitación</h2>
             
@@ -98,7 +89,6 @@
             </form>
         </section>
 
-        <!-- VISTA 2: BUSCADOR GEOLOCALIZACIÓN (Oculto al inicio) -->
         <section id="vista-geo" class="card-box search-box-width" style="display: none;">
             <h2>Búsqueda por Geolocalización</h2>
             <p style="margin-bottom: 20px; color: #666;">Introduce una dirección para buscar habitaciones cercanas.</p>
@@ -121,7 +111,6 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="js/vitobadi12.js"></script>
     <script src="js/BuscadorLogeado.js"></script>
 </body>
