@@ -1,5 +1,6 @@
-/* Heredamos estilos base de Buscador y Solicitudes */
+/* css/VerAlquileres.css */
 
+/* Heredamos estilos base */
 .column-layout {
     flex-direction: column;
     align-items: center;
@@ -32,13 +33,17 @@
     margin-bottom: 20px;
 }
 
+/* === AQUÍ ESTÁ EL CAMBIO MÁGICO (GRID) === */
 .rental-item {
-    display: flex;
+    display: grid; /* Usamos Grid en vez de Flex */
+    /* Definimos dos columnas: 180px para la foto, el resto (1fr) para el texto */
+    grid-template-columns: 180px 1fr; 
     border: 1px solid #eee;
     border-radius: 8px;
     overflow: hidden;
     background: #fff;
     transition: box-shadow 0.2s, transform 0.2s;
+    /* Eliminamos alturas mínimas, dejamos que el contenido mande */
 }
 
 .rental-item:hover {
@@ -47,19 +52,21 @@
 }
 
 .rental-img {
-    width: 160px;
-    height: 130px;
-    object-fit: cover;
+    width: 100%;  /* Ocupa todo el ancho de su celda (180px) */
+    height: 100%; /* Ocupa todo el alto de su celda (igual que el texto) */
+    object-fit: cover; /* Recorta la imagen para que no se deforme */
+    object-position: center;
+    display: block; /* Elimina huecos fantasma */
 }
 
 .rental-info {
     padding: 15px 20px;
-    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center; /* Centra el texto verticalmente si es poco */
 }
 
+/* === Resto de estilos igual === */
 .rental-address {
     font-weight: bold;
     font-size: 1.2rem;
@@ -88,9 +95,9 @@
     padding: 5px 10px;
     border-radius: 4px;
     display: inline-block;
+    align-self: flex-start; /* Para que la cajita gris no se estire */
 }
 
-/* --- ESTILOS ESPECIFICOS PROPIETARIO --- */
 .status-title {
     font-size: 1.1rem;
     margin: 20px 0 15px 0;
@@ -115,13 +122,14 @@
     border-radius: 5px;
 }
 
-/* Responsive */
+/* Responsive: En móvil pasamos a 1 sola columna */
 @media (max-width: 600px) {
     .rental-item {
-        flex-direction: column;
+        grid-template-columns: 1fr; /* Una sola columna */
+        grid-template-rows: 160px auto; /* Fila 1 (foto) fija, Fila 2 (texto) auto */
     }
     .rental-img {
-        width: 100%;
-        height: 150px;
+        /* En móvil sí forzamos altura fija para la foto */
+        height: 100%; 
     }
 }

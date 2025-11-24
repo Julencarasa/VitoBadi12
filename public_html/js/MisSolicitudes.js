@@ -108,6 +108,7 @@ async function cargarEnviadas(db, emailUser) {
                 <img src="${habitacion.imagen || 'imgs/VitoBadi Logo.png'}" class="req-img">
                 <div class="req-info">
                     <div class="req-address">${habitacion.direccion}</div>
+                    <div style="font-size: 0.9rem; color: #666; margin-bottom: 4px;">${habitacion.ciudad}</div>
                     <div class="req-price">${habitacion.precio} €</div>
                     <div class="req-status">Propietario: ${habitacion.emailPropietario}</div>
                 </div>
@@ -145,6 +146,7 @@ async function cargarRecibidas(db, habitaciones) {
             <img src="${hab.imagen || 'imgs/VitoBadi Logo.png'}" class="req-img">
             <div class="req-info">
                 <div class="req-address">${hab.direccion}</div>
+                <div style="font-size: 0.9rem; color: #666; margin-bottom: 4px;">${hab.ciudad}</div>
                 <div class="req-price">${hab.precio} €</div>
             </div>
             <div class="req-action">

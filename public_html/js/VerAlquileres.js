@@ -65,8 +65,7 @@ async function cargarComoInquilino(db, emailUser) {
     if (alquileres.length > 0) {
         section.style.display = 'block';
 
-        // 2. Ordenar por fecha fin (Descendente: los más recientes primero, o Ascendente según prefieras)
-        // El enunciado dice "ordenadas por fecha de fin". Usaremos descendente (el último contrato arriba).
+        // 2. Ordenar por fecha fin (Descendente)
         alquileres.sort((a, b) => new Date(b.fFin) - new Date(a.fFin));
 
         for (const alq of alquileres) {
@@ -81,7 +80,8 @@ async function cargarComoInquilino(db, emailUser) {
                 item.innerHTML = `
                     <img src="${habitacion.imagen || 'imgs/VitoBadi Logo.png'}" class="rental-img">
                     <div class="rental-info">
-                        <div class="rental-address">${habitacion.direccion} (${habitacion.ciudad})</div>
+                        <div class="rental-address">${habitacion.direccion}</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 4px;">${habitacion.ciudad}</div>
                         <div class="rental-price">${habitacion.precio} € / mes</div>
                         <div class="rental-details">
                             Propietario: <strong>${habitacion.emailPropietario}</strong>
@@ -111,7 +111,6 @@ async function cargarComoPropietario(db, emailProp) {
     const listActivos = document.getElementById('lista-prop-activos');
     const listInactivos = document.getElementById('lista-prop-inactivos');
     
-    // Usamos una transacción para todo
     const tx = db.transaction(['habitacion', 'alquiler'], 'readonly');
     const storeHab = tx.objectStore('habitacion');
     const indexProp = storeHab.index('fk_email_prop'); // Mis habitaciones
@@ -127,11 +126,8 @@ async function cargarComoPropietario(db, emailProp) {
 
     let hayAlquileres = false;
     const fechaActual = new Date();
-    // Ponemos la hora a 0 para comparar solo fechas si fuera necesario, 
-    // pero new Date() directo funciona bien.
     fechaActual.setHours(0,0,0,0);
 
-    // Arrays temporales para ordenar antes de pintar
     let listaActivos = [];
     let listaInactivos = [];
 
@@ -145,7 +141,6 @@ async function cargarComoPropietario(db, emailProp) {
             hayAlquileres = true;
 
             for (const contrato of contratos) {
-                // Determinar si está activo
                 const fechaFin = new Date(contrato.fFin);
                 const esActivo = fechaFin >= fechaActual;
 
@@ -168,8 +163,8 @@ async function cargarComoPropietario(db, emailProp) {
         section.style.display = 'block';
 
         // 3. Ordenar listas por fecha de fin
-        listaActivos.sort((a, b) => new Date(a.contrato.fFin) - new Date(b.contrato.fFin)); // Los que caducan antes, primero
-        listaInactivos.sort((a, b) => new Date(b.contrato.fFin) - new Date(a.contrato.fFin)); // Los más recientes en historial, primero
+        listaActivos.sort((a, b) => new Date(a.contrato.fFin) - new Date(b.contrato.fFin));
+        listaInactivos.sort((a, b) => new Date(b.contrato.fFin) - new Date(a.contrato.fFin));
 
         // 4. Renderizar Activos
         if (listaActivos.length > 0) {
@@ -196,6 +191,7 @@ function pintarItemPropietario(data, container) {
         <img src="${habitacion.imagen || 'imgs/VitoBadi Logo.png'}" class="rental-img">
         <div class="rental-info">
             <div class="rental-address">${habitacion.direccion}</div>
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 4px;">${habitacion.ciudad}</div>
             <div class="rental-price">${habitacion.precio} €</div>
             <div class="rental-details">
                 Inquilino: <strong>${contrato.emailInqui}</strong>
