@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Habitaciones - VitoBadi</title>
+    <link rel="stylesheet" href="css/BuscadorLogeado.css">
+    <link rel="stylesheet" href="css/VerMisHabitaciones.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="header-title">
+                <a href="BuscadorLogeado.html">
+                    <img src="imgs/VitoBadi Logo.png" alt="VitoBadi" class="header-logo-img">
+                </a>
+            </h1>
+            <nav class="header-nav user-nav">
+                <div class="user-info">
+                    <span id="user-greeting">Cargando...</span>
+                    <img id="user-photo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Perfil" class="profile-pic">
+                </div>
+                <button id="btn-logout" class="btn btn-outline btn-sm">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="sub-header">
+        <div class="container">
+            <ul class="nav-menu">
+                <li class="nav-item dropdown">
+                    <a href="BuscadorLogeado.html" class="nav-link">Consultar</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link active-link">Habitación</a>
+                    <div class="dropdown-content">
+                        <a href="AñadirHabitacion.html">Añadir Habitación</a>
+                        <a href="VerMisHabitaciones.html">Ver Mis Habitaciones</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Solicitudes</a>
+                    <div class="dropdown-content">
+                        <a href="MisSolicitudes.html">Ver Solicitudes</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Alquileres</a>
+                    <div class="dropdown-content">
+                        <a href="VerAlquileres.html">Ver Alquileres</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content column-layout">
+        
+        <section class="card-box wide-box">
+            <h2>Mis Habitaciones Publicadas</h2>
+            <p class="subtitle">Listado de propiedades que ofreces actualmente</p>
+
+            <div id="lista-mis-habitaciones" class="room-list">
+                </div>
+
+            <p id="msg-no-rooms" class="empty-msg" style="display:none;">
+                No tienes habitaciones publicadas.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><b>Hector Carrera y Julen Carasa</b> &copy; 2025</p>
+        </div>
+    </footer>
+
+    <script src="js/vitobadi12.js"></script>
+    <script src="js/VerMisHabitaciones.js"></script>
+</body>
+</html>
