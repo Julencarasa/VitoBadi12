@@ -1,135 +1,121 @@
 /* css/VerAlquileres.css */
 
-/* Heredamos estilos base */
+/* Layout general */
 .column-layout {
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-top: 40px;
+    padding-top: 30px;
 }
 
+/* Caja contenedora */
 .wide-box {
-    max-width: 1000px;
-    width: 95%;
-    text-align: left;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 25px;
+    padding: 25px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .subtitle {
-    color: #777;
+    color: #666;
     margin-bottom: 20px;
     font-size: 0.95rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
 }
 
-.active-link {
-    color: var(--color-primary) !important;
-    border-bottom: 3px solid var(--color-primary);
+/* Títulos de estado (Activo / Historial) */
+.status-title {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #444;
+    border-left: 4px solid #ddd;
+    padding-left: 10px;
 }
 
-/* --- LISTAS --- */
+.active-title { border-color: #27ae60; }   /* Borde verde */
+.inactive-title { border-color: #c0392b; } /* Borde rojo */
+
+/* Divisor horizontal */
+.divider {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 30px 0;
+}
+
+/* --- ESTILOS DE LA TARJETA --- */
 .rental-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    margin-bottom: 20px;
 }
 
-/* === AQUÍ ESTÁ EL CAMBIO MÁGICO (GRID) === */
 .rental-item {
-    display: grid; /* Usamos Grid en vez de Flex */
-    /* Definimos dos columnas: 180px para la foto, el resto (1fr) para el texto */
-    grid-template-columns: 180px 1fr; 
-    border: 1px solid #eee;
-    border-radius: 8px;
+    display: flex;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
     overflow: hidden;
     background: #fff;
-    transition: box-shadow 0.2s, transform 0.2s;
-    /* Eliminamos alturas mínimas, dejamos que el contenido mande */
+    align-items: center;
+    transition: box-shadow 0.2s;
 }
 
 .rental-item:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
 .rental-img {
-    width: 100%;  /* Ocupa todo el ancho de su celda (180px) */
-    height: 100%; /* Ocupa todo el alto de su celda (igual que el texto) */
-    object-fit: cover; /* Recorta la imagen para que no se deforme */
-    object-position: center;
-    display: block; /* Elimina huecos fantasma */
+    width: 110px;
+    height: 90px;
+    object-fit: cover;
+    display: block;
 }
 
 .rental-info {
-    padding: 15px 20px;
+    flex: 1;
+    padding: 10px 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centra el texto verticalmente si es poco */
+    justify-content: center;
 }
 
-/* === Resto de estilos igual === */
 .rental-address {
     font-weight: bold;
-    font-size: 1.2rem;
-    color: #333;
+    font-size: 1.05rem;
+    color: #2c3e50;
     margin-bottom: 5px;
 }
 
-.rental-price {
-    color: var(--color-primary);
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 8px;
-}
-
-.rental-details {
+.rental-dates {
     font-size: 0.9rem;
     color: #555;
-    line-height: 1.5;
+    margin-bottom: 5px;
 }
 
-.rental-dates {
-    margin-top: 8px;
+.rental-extra {
     font-size: 0.85rem;
-    color: #777;
-    background: #f9f9f9;
-    padding: 5px 10px;
-    border-radius: 4px;
-    display: inline-block;
-    align-self: flex-start; /* Para que la cajita gris no se estire */
+    color: #888;
+    font-style: italic;
 }
 
-.status-title {
-    font-size: 1.1rem;
-    margin: 20px 0 15px 0;
+.rental-price {
+    padding: 0 25px;
+    font-weight: bold;
+    color: #00cccc; /* Tu color primario */
+    font-size: 1.2rem;
+    min-width: 100px;
+    text-align: right;
 }
 
-.active-title { color: #2ecc71; }
-.inactive-title { color: #e74c3c; }
-
-.divider {
-    border: 0;
-    height: 1px;
-    background: #eee;
-    margin: 30px 0;
-}
-
+/* Mensaje vacío */
 .empty-msg {
     text-align: center;
-    padding: 15px;
     color: #999;
+    padding: 15px;
     font-style: italic;
-    background: #fafafa;
-    border-radius: 5px;
-}
-
-/* Responsive: En móvil pasamos a 1 sola columna */
-@media (max-width: 600px) {
-    .rental-item {
-        grid-template-columns: 1fr; /* Una sola columna */
-        grid-template-rows: 160px auto; /* Fila 1 (foto) fija, Fila 2 (texto) auto */
-    }
-    .rental-img {
-        /* En móvil sí forzamos altura fija para la foto */
-        height: 100%; 
-    }
+    background: #fdfdfd;
+    border-radius: 4px;
 }

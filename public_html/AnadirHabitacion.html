@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Alquileres - VitoBadi</title>
-    <link rel="stylesheet" href="css/BuscadorLogeado.css">
-    <link rel="stylesheet" href="css/VerAlquileres.css">
-</head>
+    <title>Añadir Habitación - VitoBadi</title>
+    <link rel="stylesheet" href="css/BuscadorLogeado.css"> <link rel="stylesheet" href="css/AnadirHabitacion.css"> </head>
 <body>
 
     <header class="header">
@@ -19,7 +17,7 @@
             <nav class="header-nav user-nav">
                 <div class="user-info">
                     <span id="user-greeting">Cargando...</span>
-                    <img id="user-photo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Perfil" class="profile-pic">
+                    <img id="user-photo" src="imgs/user_placeholder.png" alt="Perfil" class="profile-pic">
                 </div>
                 <button id="btn-logout" class="btn btn-outline btn-sm">Logout</button>
             </nav>
@@ -33,7 +31,7 @@
                     <a href="BuscadorLogeado.html" class="nav-link">Consultar</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Habitación</a>
+                    <a href="#" class="nav-link active-link">Habitación</a>
                     <div class="dropdown-content">
                         <a href="AnadirHabitacion.html">Añadir Habitación</a>
                         <a href="VerMisHabitaciones.html">Ver Mis Habitaciones</a>
@@ -46,7 +44,7 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link active-link">Alquileres</a>
+                    <a href="#" class="nav-link">Alquileres</a>
                     <div class="dropdown-content">
                         <a href="VerAlquileres.html">Ver Alquileres</a>
                     </div>
@@ -55,29 +53,38 @@
         </div>
     </nav>
 
-    <main class="main-content column-layout">
-        
-        <section id="sec-inquilino" class="card-box wide-box" style="display:none;">
-            <h2>Mis Alquileres (Como Inquilino)</h2>
-            <p class="subtitle">Historial de habitaciones donde te has alojado.</p>
-            <div id="lista-inquilino" class="rental-list"></div>
-            <p id="msg-no-inquilino" class="empty-msg" style="display:none;">No tienes alquileres registrados.</p>
+    <main class="main-content">
+        <section class="card-box form-box-width">
+            <h2>Añadir Nueva Habitación</h2>
+            <p class="subtitle">Publica tu propiedad para alquilar</p>
+
+            <form id="form-anadir">
+                
+                <div class="form-group">
+                    <label for="direccion">Dirección:</label>
+                    <input type="text" id="direccion" name="direccion" placeholder="Ej: Calle Dato 1, Vitoria" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="precio">Precio (€/mes):</label>
+                    <input type="number" id="precio" name="precio" min="1" placeholder="Ej: 350" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto de la habitación:</label>
+                    
+                    <div id="drop-zone" class="drop-zone">
+                        <p>Arrastra tu foto aquí o haz clic para subir</p>
+                        <input type="file" id="input-foto" accept="image/*" hidden>
+                        <img id="preview-img" class="preview-img" style="display: none;">
+                    </div>
+                </div>
+
+                <div id="error-msg" class="error-msg"></div>
+
+                <button type="submit" class="btn btn-primary btn-full">Aceptar</button>
+            </form>
         </section>
-
-        <section id="sec-propietario" class="card-box wide-box" style="display:none; margin-top: 30px;">
-            <h2>Mis Propiedades Alquiladas</h2>
-            
-            <h3 class="status-title active-title">🟢 Alquileres Activos (En curso)</h3>
-            <div id="lista-prop-activos" class="rental-list"></div>
-            <p id="msg-no-activos" class="empty-msg" style="display:none;">No tienes habitaciones alquiladas actualmente.</p>
-
-            <hr class="divider">
-
-            <h3 class="status-title inactive-title">🔴 Historial (Finalizados)</h3>
-            <div id="lista-prop-inactivos" class="rental-list"></div>
-            <p id="msg-no-inactivos" class="empty-msg" style="display:none;">No tienes historial de alquileres finalizados.</p>
-        </section>
-
     </main>
 
     <footer class="footer">
@@ -87,6 +94,6 @@
     </footer>
 
     <script src="js/vitobadi12.js"></script>
-    <script src="js/VerAlquileres.js"></script>
+    <script src="js/AnadirHabitacion.js"></script>
 </body>
 </html>

@@ -1,0 +1,127 @@
+/* css/AnadirHabitacion.css */
+
+/* Reutiliza estilos base de BuscadorLogeado.css */
+
+.form-box-width {
+    width: 100%;
+    max-width: 600px; /* Un poco más estrecho que el buscador */
+    margin: 0 auto;
+    text-align: left;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #00cccc;
+    outline: none;
+}
+
+/* --- DRAG AND DROP ZONE --- */
+.drop-zone {
+    width: 100%;
+    height: 200px;
+    border: 3px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #fafafa;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.drop-zone:hover {
+    background-color: #f0f8f8;
+    border-color: #99e6e6;
+}
+
+/* Clase que JS añadirá cuando se arrastre un archivo encima */
+.drop-zone.dragover {
+    background-color: #e0f7fa;
+    border-color: #00cccc;
+    transform: scale(1.02);
+}
+
+.drop-zone p {
+    padding: 20px;
+    pointer-events: none; /* Para que el texto no interfiera con el drop */
+}
+
+/* Imagen Previsualizada */
+.preview-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none; /* Oculta por defecto */
+}
+
+/* Mensajes y Botones */
+.error-msg {
+    color: #e74c3c;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+    min-height: 20px;
+}
+
+.btn-full {
+    width: 100%;
+    margin-top: 10px;
+}
+/* Estilos para validación en tiempo real */
+.input-error {
+    border: 2px solid #e74c3c !important; /* Rojo */
+    background-color: #fadbd8 !important;
+}
+
+.input-success {
+    border: 2px solid #2ecc71 !important; /* Verde */
+    background-color: #eafaf1 !important;
+}
+
+.msg-error-text {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: none; /* Oculto por defecto */
+    font-weight: bold;
+}
+
+/* Mostrar mensaje si el input anterior tiene error */
+.input-error + .msg-error-text {
+    display: block;
+}

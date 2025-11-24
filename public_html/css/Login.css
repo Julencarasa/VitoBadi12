@@ -169,3 +169,26 @@ body {
 .btn-primary:hover {
     background-color: var(--color-primary-hover);
 }
+/* Estilos para validación en tiempo real */
+.input-error {
+    border: 2px solid #e74c3c !important; /* Rojo */
+    background-color: #fadbd8 !important;
+}
+
+.input-success {
+    border: 2px solid #2ecc71 !important; /* Verde */
+    background-color: #eafaf1 !important;
+}
+
+.msg-error-text {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: none; /* Oculto por defecto */
+    font-weight: bold;
+}
+
+/* Mostrar mensaje si el input anterior tiene error */
+.input-error + .msg-error-text {
+    display: block;
+}
