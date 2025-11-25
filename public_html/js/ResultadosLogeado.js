@@ -52,11 +52,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // FILTRADO
         const habitacionesDisponibles = habitaciones.filter(hab => {
-            // 1. NO MOSTRAR MIS PROPIAS HABITACIONES
+           
             if (hab.emailPropietario === currentUserEmail) {
                 return false; 
             }
-            // 2. FILTRO DE FECHAS
+            
             const estaOcupada = alquileres.some(alq => {
                 if (alq.idHabi !== hab.idHabi) return false;
                 const fInicio = new Date(alq.fIni);
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement('div');
             card.className = 'room-card';
 
-            // REDIRECCIÓN A HABITACION.HTML
+           
             card.addEventListener('click', () => {
                 window.location.href = `habitacion.html?id=${hab.idHabi}`;
             });

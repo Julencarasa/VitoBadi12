@@ -1,11 +1,11 @@
-/* js/resultadosAnonimos.js */
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     const contenedor = document.getElementById('lista-habitaciones');
     const titulo = document.getElementById('titulo-resultado');
     const mensajeVacio = document.getElementById('mensaje-vacio');
 
-    // 1. OBTENER PARÁMETROS DE LA URL
+   
     const params = new URLSearchParams(window.location.search);
     const ciudadBuscada = params.get('ciudad');
     const fechaBuscadaStr = params.get('fecha');
@@ -19,9 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const fechaBusqueda = new Date(fechaBuscadaStr);
     if (titulo) titulo.textContent = `Habitaciones disponibles en ${ciudadBuscada}`;
 
-    /* ===========================================================
-       NUEVO: INTERCEPTOR DEL BOTÓN LOGIN (HEADER)
-       =========================================================== */
+   
     // Buscamos el botón que lleva al login en la barra de navegación
     const btnLoginHeader = document.querySelector('.header-nav a[href="login.html"]');
     
@@ -42,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     /* =========================================================== */
 
 
-    /* --- CAMBIO DE FONDO SEGÚN CIUDAD --- */
+    
     const mainContent = document.querySelector('.main-content');
     const imagenesFondo = {
         'Vitoria': 'imgs/fondoVitoria.jpg',
@@ -54,10 +52,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     try {
-        // 2. CONEXIÓN A LA BASE DE DATOS
+       
         const db = await abrirBD();
 
-        // 3. OBTENER DATOS
+        
         const tx = db.transaction(['habitacion', 'alquiler'], 'readonly');
         
         const storeHab = tx.objectStore('habitacion');
@@ -76,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             req.onerror = () => resolve([]);
         });
 
-        // 4. FILTRAR DISPONIBILIDAD
+        
         const habitacionesDisponibles = habitaciones.filter(hab => {
             const estaOcupada = alquileres.some(alq => {
                 if (alq.idHabi !== hab.idHabi) return false;
@@ -87,10 +85,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             return !estaOcupada;
         });
 
-        // 5. ORDENAR
+       
         habitacionesDisponibles.sort((a, b) => a.precio - b.precio);
 
-        // 6. PINTAR RESULTADOS
+        
         if (contenedor) contenedor.innerHTML = ""; 
 
         if (habitacionesDisponibles.length === 0) {
@@ -103,9 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement('div');
             card.className = 'room-card';
 
-            /* ================================================================
-               CLIC EN TARJETA -> IR A DETALLE (INDEX.HTML)
-               ================================================================ */
+            
             card.addEventListener('click', () => {
                 // Queremos ver el detalle de esta habitación concreta
                 const destinoDetalle = `habitacion.html?id=${hab.idHabi}`;

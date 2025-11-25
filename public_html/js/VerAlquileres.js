@@ -1,15 +1,13 @@
-/* js/VerAlquileres.js */
-
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. SEGURIDAD: Verificar que el usuario está logueado
+    // seguridad: si no esta logueado fuera
     const currentUserEmail = sessionStorage.getItem('currentUser');
     if (!currentUserEmail) {
         window.location.href = 'login.html';
         return;
     }
 
-    // 2. HEADER: Cargar datos del usuario en la cabecera
+    // poner datos en el header
     let usuario = null;
     try { usuario = JSON.parse(sessionStorage.getItem(currentUserEmail)); } catch(e){}
     
@@ -20,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (usuario.foto && usuario.foto.length > 10) photo.src = usuario.foto;
     }
 
-    // Botón Logout
+    // boton de salir
     const btnLogout = document.getElementById('btn-logout');
     if(btnLogout) {
         btnLogout.addEventListener('click', () => {
@@ -29,15 +27,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 3. CARGA DE DATOS (Lógica Híbrida)
+    // cargar cosas de la bd
     try {
         const db = await abrirBD();
 
-        // PARTE A: Cargar historial como INQUILINO (donde yo vivo/viví)
+        // cargar mis alquileres como inquilino
         await cargarHistorialInquilino(db, currentUserEmail);
 
-        // PARTE B: Cargar historial como PROPIETARIO (mis pisos alquilados)
-        // Primero verificamos si tengo habitaciones publicadas
+        // cargar mis alquileres como propietario
+        // miro si tengo habitaciones primero
         const tx = db.transaction(['habitacion'], 'readonly');
         const storeHab = tx.objectStore('habitacion');
         const indexProp = storeHab.index('fk_email_prop');
@@ -47,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         request.onsuccess = async () => {
             const misHabitaciones = request.result;
             if (misHabitaciones.length > 0) {
-                // Si tengo habitaciones, muestro la sección de propietario y cargo los datos
+                // si tengo habitaciones muestro la seccion
                 const secProp = document.getElementById('sec-propietario');
                 if(secProp) secProp.style.display = 'block';
                 await cargarHistorialPropietario(db, misHabitaciones);
@@ -59,10 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-/**
- * LÓGICA 1: COMO INQUILINO
- * Muestra las habitaciones donde el usuario figura como inquilino.
- */
+// funcion para cargar lo de inquilino
 async function cargarHistorialInquilino(db, emailUser) {
     const section = document.getElementById('sec-inquilino');
     const container = document.getElementById('lista-inquilino');
@@ -72,21 +67,21 @@ async function cargarHistorialInquilino(db, emailUser) {
     const storeAlq = tx.objectStore('alquiler');
     const indexInqui = storeAlq.index('fk_inquilino');
 
-    // Buscar alquileres donde yo soy el inquilino
+    // busco mis alquileres
     const alquileres = await new Promise(resolve => {
         indexInqui.getAll(emailUser).onsuccess = (e) => resolve(e.target.result);
     });
 
-    // Si no hay alquileres, mostramos mensaje
+    // si no hay nada
     if (alquileres.length === 0) {
-        if(section) section.style.display = 'block'; // Mostramos la sección vacía
+        if(section) section.style.display = 'block'; 
         if(msgVacio) msgVacio.style.display = 'block';
         return;
     }
 
     if(section) section.style.display = 'block';
 
-    // Ordenar por fecha fin descendente (más reciente primero)
+    // ordenar por fecha fin
     alquileres.sort((a, b) => new Date(b.fFin) - new Date(a.fFin));
 
     const storeHab = tx.objectStore('habitacion');
@@ -97,17 +92,14 @@ async function cargarHistorialInquilino(db, emailUser) {
         });
 
         if (hab) {
-            // Usamos la función purista DOM
+            // creo la tarjeta
             const card = crearTarjetaAlquiler(hab, alq, "Propietario: " + hab.emailPropietario);
             container.appendChild(card);
         }
     }
 }
 
-/**
- * LÓGICA 2: COMO PROPIETARIO
- * Separa alquileres en Activos (en curso) e Inactivos (historial).
- */
+// funcion para cargar lo de propietario
 async function cargarHistorialPropietario(db, misHabitaciones) {
     const containerActivos = document.getElementById('lista-prop-activos');
     const containerInactivos = document.getElementById('lista-prop-inactivos');
@@ -121,9 +113,8 @@ async function cargarHistorialPropietario(db, misHabitaciones) {
     let listaActivos = [];
     let listaInactivos = [];
     const hoy = new Date();
-    // Ajustamos la hora de "hoy" a 00:00 para comparar solo fechas si es necesario, 
-    // pero new Date() directo funciona bien para comparaciones estándar.
-
+    
+    // recorro mis habitaciones y busco contratos
     for (const hab of misHabitaciones) {
         const contratos = await new Promise(resolve => {
             indexAlqHab.getAll(hab.idHabi).onsuccess = (e) => resolve(e.target.result);
@@ -131,6 +122,7 @@ async function cargarHistorialPropietario(db, misHabitaciones) {
 
         contratos.forEach(contrato => {
             const fFin = new Date(contrato.fFin);
+            // separo activos y pasados
             if (fFin >= hoy) {
                 listaActivos.push({ habitacion: hab, alquiler: contrato });
             } else {
@@ -139,11 +131,11 @@ async function cargarHistorialPropietario(db, misHabitaciones) {
         });
     }
 
-    // Ordenar
+    // ordenar
     listaActivos.sort((a, b) => new Date(a.alquiler.fFin) - new Date(b.alquiler.fFin));
     listaInactivos.sort((a, b) => new Date(b.alquiler.fFin) - new Date(a.alquiler.fFin));
 
-    // Renderizar Activos
+    // mostrar activos
     if (listaActivos.length > 0) {
         listaActivos.forEach(item => {
             const card = crearTarjetaAlquiler(item.habitacion, item.alquiler, "Inquilino: " + item.alquiler.emailInqui);
@@ -153,11 +145,10 @@ async function cargarHistorialPropietario(db, misHabitaciones) {
         if(msgNoActivos) msgNoActivos.style.display = 'block';
     }
 
-    // Renderizar Historial
+    // mostrar historial
     if (listaInactivos.length > 0) {
         listaInactivos.forEach(item => {
             const card = crearTarjetaAlquiler(item.habitacion, item.alquiler, "Ex-Inquilino: " + item.alquiler.emailInqui);
-            // Estilo visual para indicar que es pasado
             card.style.opacity = "0.7"; 
             card.style.backgroundColor = "#f9f9f9";
             containerInactivos.appendChild(card);
@@ -167,36 +158,37 @@ async function cargarHistorialPropietario(db, misHabitaciones) {
     }
 }
 
-/**
- * FUNCIÓN PURISTA DOM (Sin innerHTML)
- * Crea la tarjeta visual elemento a elemento.
- */
+// funcion para crear el html de la tarjeta
 function crearTarjetaAlquiler(hab, alq, extraInfo) {
-    // 1. Contenedor principal
     const divCard = document.createElement('div');
     divCard.className = 'rental-item';
 
-    // 2. Imagen
     const img = document.createElement('img');
     img.className = 'rental-img';
-    // Comprobación de imagen válida
+    
+    // foto base64 o defecto
     if (hab.imagen && hab.imagen.length > 50) {
         img.src = hab.imagen;
     } else {
-        img.src = 'imgs/VitoBadi Logo.png'; // Imagen por defecto
+        img.src = 'imgs/VitoBadi Logo.png';
     }
     img.alt = 'Foto habitación';
 
-    // 3. Contenedor Info
     const divInfo = document.createElement('div');
     divInfo.className = 'rental-info';
 
-    // 3a. Dirección
+    // direccion
     const divAddress = document.createElement('div');
     divAddress.className = 'rental-address';
     divAddress.textContent = hab.direccion;
 
-    // 3b. Fechas y Estado
+    // ciudad en pequeño
+    const divCity = document.createElement('div');
+    divCity.style.fontSize = '0.9rem';
+    divCity.style.color = '#666';
+    divCity.style.marginBottom = '4px';
+    divCity.textContent = hab.ciudad;
+
     const divDates = document.createElement('div');
     divDates.className = 'rental-dates';
     
@@ -213,29 +205,26 @@ function crearTarjetaAlquiler(hab, alq, extraInfo) {
     
     if (esActivo) {
         spanEstado.textContent = '(ACTIVO)';
-        spanEstado.style.color = '#27ae60'; // Verde
+        spanEstado.style.color = '#27ae60'; 
     } else {
         spanEstado.textContent = '(FINALIZADO)';
-        spanEstado.style.color = '#c0392b'; // Rojo
+        spanEstado.style.color = '#c0392b'; 
     }
     divDates.appendChild(spanEstado);
 
-    // 3c. Info Extra (Email del otro usuario)
     const divExtra = document.createElement('div');
     divExtra.className = 'rental-extra';
     divExtra.textContent = extraInfo;
 
-    // Añadir hijos al contenedor Info
     divInfo.appendChild(divAddress);
+    divInfo.appendChild(divCity);
     divInfo.appendChild(divDates);
     divInfo.appendChild(divExtra);
 
-    // 4. Precio
     const divPrice = document.createElement('div');
     divPrice.className = 'rental-price';
     divPrice.textContent = `${hab.precio} €`;
 
-    // 5. Ensamblaje final
     divCard.appendChild(img);
     divCard.appendChild(divInfo);
     divCard.appendChild(divPrice);

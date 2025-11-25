@@ -1,4 +1,4 @@
-/* css/BuscadorLogeado.css */
+
 :root {
     --color-primary: #00cccc;
     --color-primary-hover: #008b8b;
@@ -18,19 +18,19 @@ body {
     min-height: 100vh;
 }
 
-/* --- Header --- */
+/* Header */
 .header { background: white; padding: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 .header-content { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
 .header-title a { text-decoration: none; }
 .header-logo-img { height: 50px; width: auto; }
 
-/* --- User Nav --- */
+/* Nav  */
 .user-nav { display: flex; align-items: center; gap: 15px; }
 .user-info { display: flex; align-items: center; gap: 10px; font-weight: bold; color: #555; }
 .profile-pic { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-primary); }
 #btn-logout { font-size: 0.9rem; padding: 5px 12px; }
 
-/* --- Sub-Header (Navigation Menu) --- */
+/* Sub-Header */
 .sub-header { background-color: #333; width: 100%; }
 .nav-menu { list-style: none; display: flex; justify-content: center; max-width: 1200px; margin: 0 auto; }
 .nav-item { position: relative; }
@@ -44,7 +44,7 @@ body {
 .dropdown-content a:hover { background-color: #f1f1f1; color: var(--color-primary); }
 .dropdown:hover .dropdown-content { display: block; }
 
-/* --- Main Content --- */
+/* Main Content */
 .main-content {
     flex: 1;
     display: flex;
@@ -57,7 +57,7 @@ body {
     padding: 40px 20px;
 }
 
-/* --- Card Box (Caja Blanca) --- */
+/*Caja Blanca*/
 .card-box {
     background: rgba(255, 255, 255, 0.95);
     padding: 30px;
@@ -69,7 +69,7 @@ body {
 .search-box-width { width: 100%; max-width: 800px; }
 .card-box h2 { margin-bottom: 20px; color: #2c3e50; }
 
-/* --- Forms --- */
+/* Forms */
 .form-inline { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: center; }
 .form-geo { display: flex; flex-direction: column; align-items: center; gap: 15px; max-width: 600px; margin: 0 auto; }
 
@@ -88,7 +88,7 @@ body {
 /* Footer */
 .footer { background: #333; color: white; text-align: center; padding: 15px; margin-top: auto; }
 
-/* --- MAPA GOOGLE (NUEVO) --- */
+/* MAPA GOOGLE  */
 #mapa-resultado {
     width: 100%;
     height: 400px;

@@ -2,14 +2,14 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. SEGURIDAD
+    // SEGURIDAD
     const currentUserEmail = sessionStorage.getItem('currentUser');
     if (!currentUserEmail) {
         window.location.href = 'login.html';
         return;
     }
 
-    // 2. HEADER
+    // HEADER
     let usuario = null;
     try { usuario = JSON.parse(sessionStorage.getItem(currentUserEmail)); } catch(e){}
     
@@ -28,13 +28,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 3. REFERENCIAS DEL FORMULARIO
+    // REFERENCIAS DEL FORMULARIO
     const inputDireccion = document.getElementById('direccion');
     const inputPrecio = document.getElementById('precio');
     const form = document.getElementById('form-anadir');
     const errorMsg = document.getElementById('error-msg');
 
-    // 4. LÓGICA DRAG AND DROP (FOTO) - (Sin cambios, funciona bien)
+    // LÓGICA DRAG AND DROP
     const dropZone = document.getElementById('drop-zone');
     const inputFoto = document.getElementById('input-foto');
     const previewImg = document.getElementById('preview-img');
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         reader.readAsDataURL(file);
     }
 
-    // 5. ENVÍO DEL FORMULARIO CON GOOGLE MAPS
+    // ENVÍO DEL FORMULARIO CON GOOGLE MAPS
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         errorMsg.textContent = "";
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const direccionTexto = inputDireccion.value.trim();
         const precio = parseInt(inputPrecio.value);
 
-        // --- Validaciones iniciales ---
+        // Validaciones iniciales
         if (!direccionTexto || direccionTexto.length < 3) return mostrarError("La dirección es demasiado corta.");
         if (!precio || precio <= 0) return mostrarError("El precio debe ser mayor que 0.");
         if (!fotoBase64) return mostrarError("Debes subir una foto de la habitación.");
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnSubmit.textContent = "Consultando Google Maps...";
         btnSubmit.disabled = true;
 
-        // --- LLAMADA A LA API DE GOOGLE MAPS (GEOCODER) ---
+        // LLAMADA A LA API DE GOOGLE MAPS 
         const geocoder = new google.maps.Geocoder();
 
         geocoder.geocode({ 'address': direccionTexto }, async (results, status) => {
@@ -97,11 +97,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Google encontró la dirección
                 const resultado = results[0];
                 
-                // A) Obtener Coordenadas
+                // Obtener Coordenadas
                 const latitudFinal = resultado.geometry.location.lat();
                 const longitudFinal = resultado.geometry.location.lng();
                 
-                // B) Detectar Ciudad
+                // Detectar Ciudad
                 // Google devuelve la dirección desglosada en 'address_components'.
                 // Buscamos el componente que sea de tipo 'locality' (ciudad).
                 let ciudadGoogle = "";
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
 
-                // C) Validar si la ciudad es una de las permitidas
+                // Validar si la ciudad es una de las permitidas
                 let ciudadFinal = null;
                 if (ciudadGoogle.includes("Vitoria") || ciudadGoogle.includes("Gasteiz")) ciudadFinal = "Vitoria";
                 else if (ciudadGoogle.includes("Bilbao")) ciudadFinal = "Bilbao";
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return mostrarError(`Ubicación detectada: ${ciudadGoogle}. Solo operamos en Vitoria, Bilbao o Donostia.`);
                 }
 
-                // D) Guardar en IndexedDB
+                // Guardar en IndexedDB
                 try {
                     const db = await abrirBD();
                     // Transacción de escritura
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         store.add(nuevaHabitacion);
                     };
 
-                    // 2. Esperar a que termine la transacción (CRUCIAL para que se guarde bien)
+                    // Esperar a que termine la transacción (CRUCIAL para que se guarde bien)
                     tx.oncomplete = () => {
                         alert(`¡Guardado con éxito!\nUbicación: ${ciudadFinal}`);
                         window.location.href = "VerMisHabitaciones.html";
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
             } else {
-                // Google devolvió error (ZERO_RESULTS, REQUEST_DENIED, etc.)
+                // Google devolvió error 
                 restaurarBoton();
                 mostrarError('Google no encontró la dirección. Intenta ser más específico (ej: Calle Dato 1, Vitoria). Estado: ' + status);
             }

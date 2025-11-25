@@ -1,15 +1,4 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
-*/
-/* 
-    Created on : 17 nov 2025, 18:08:20
-    Author     : Usuario
-*/
-/* --- Reseteo básico y variables --- */
-/* =========================================
-   1. RESET Y VARIABLES GLOBALES
-   ========================================= */
+/* RESET Y VARIABLES GLOBALES */
 :root {
     --color-primary: #00cccc;       /* Tu color Turquesa */
     --color-primary-hover: #008b8b;
@@ -28,9 +17,7 @@ body {
     min-height: 100vh; /* Ocupa toda la altura de la pantalla */
 }
 
-/* =========================================
-   2. ESTRUCTURA PRINCIPAL (Fondo y Centrado)
-   ========================================= */
+/* ESTRUCTURA PRINCIPAL (Fondo y Centrado) */
 .main-content {
     flex: 1; /* Empuja el footer hacia abajo */
     display: flex;
@@ -52,9 +39,7 @@ body {
     padding: 0 20px;
 }
 
-/* =========================================
-   3. HEADER Y FOOTER
-   ========================================= */
+/* HEADER Y FOOTER */
 .header {
     background: white;
     padding: 10px 0;
@@ -78,9 +63,7 @@ body {
     /* margin-top automático gracias a flex:1 en main-content */
 }
 
-/* =========================================
-   4. CAJAS DE CONTENIDO (Card System)
-   ========================================= */
+/* CAJAS DE CONTENIDO (Card System) */
 /* Estilo base para la caja blanca (común a Login y Buscador) */
 .card-box {
     background: rgba(255, 255, 255, 0.95); /* Blanco con transparencia */
@@ -99,9 +82,7 @@ body {
 
 .card-box h2 { margin-bottom: 25px; color: #2c3e50; }
 
-/* =========================================
-   5. FORMULARIOS
-   ========================================= */
+/*  FORMULARIOS */
 .form-group { margin-bottom: 15px; text-align: left; }
 .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
 
@@ -113,10 +94,10 @@ body {
     font-size: 1rem;
 }
 
-/* --- Formulario Vertical (Login) --- */
+/* Login */
 #login-form { display: flex; flex-direction: column; gap: 10px; }
 
-/* --- Formulario Horizontal (Buscador) --- */
+/* Formulario Horizontal  */
 .form-inline {
     display: flex;
     flex-wrap: wrap; /* Se adapta a móvil bajando de línea */
@@ -136,9 +117,7 @@ body {
     height: 45px; /* Altura para igualar inputs */
 }
 
-/* =========================================
-   6. BOTONES
-   ========================================= */
+/*  BOTONES*/
 .btn {
     padding: 10px 25px;
     border-radius: var(--border-radius);

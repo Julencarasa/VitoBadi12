@@ -1,17 +1,13 @@
-/**
- * js/MisSolicitudes.js
- */
-
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. SEGURIDAD
+    
     const currentUserEmail = sessionStorage.getItem('currentUser');
     if (!currentUserEmail) {
         window.location.href = 'login.html';
         return;
     }
 
-    // 2. HEADER (Usuario)
+    
     let usuario = null;
     try { usuario = JSON.parse(sessionStorage.getItem(currentUserEmail)); } catch(e){}
     
@@ -28,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'BuscadorAnonimo.html';
     });
 
-    // --- CONFIGURACIÓN DEL MODAL (Cerrar) ---
+    
     // Lo configuramos aquí una sola vez para asegurar que funcione siempre
     const modal = document.getElementById('modal-inquilinos');
     const closeBtn = document.querySelector('.close-btn');
@@ -46,14 +42,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 
-    // 3. CARGA DE DATOS
+  
     try {
         const db = await abrirBD();
 
-        // A) CARGAR MIS SOLICITUDES ENVIADAS (Inquilino)
+       
         await cargarEnviadas(db, currentUserEmail);
 
-        // B) CARGAR SOLICITUDES RECIBIDAS (Propietario)
+        
         // Usamos una transacción para buscar las habitaciones
         const txHab = db.transaction(['habitacion'], 'readonly');
         const storeHab = txHab.objectStore('habitacion');
@@ -75,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// --- FUNCIONES DE CARGA ---
+
 
 async function cargarEnviadas(db, emailUser) {
     const container = document.getElementById('lista-enviadas');
@@ -123,7 +119,7 @@ async function cargarRecibidas(db, habitaciones) {
     const msgEmpty = document.getElementById('msg-no-recibidas');
     let haySolicitudes = false;
 
-    // Nota: Aquí NO obtenemos el store de 'usuario' todavía porque la transacción caducaría
+    
     const tx = db.transaction(['solicitud'], 'readonly');
     const storeSol = tx.objectStore('solicitud');
     const indexSolHab = storeSol.index('fk_habitacion');
@@ -160,7 +156,7 @@ async function cargarRecibidas(db, habitaciones) {
         // Evento botón
         if (solicitudes.length > 0) {
             const btn = div.querySelector('.btn-ver-candidatos');
-            // CORRECCIÓN: Pasamos 'db' en lugar de un 'store' viejo
+           
             btn.addEventListener('click', () => abrirModal(db, solicitudes));
         }
     }
@@ -178,7 +174,7 @@ async function abrirModal(db, solicitudes) {
     listContainer.innerHTML = '<p>Cargando datos...</p>';
     modal.style.display = 'flex';
 
-    // CORRECCIÓN: Creamos una NUEVA transacción aquí mismo, en el momento del click
+    
     const tx = db.transaction(['usuario'], 'readonly');
     const storeUser = tx.objectStore('usuario');
 

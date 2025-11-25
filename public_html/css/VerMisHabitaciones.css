@@ -1,4 +1,13 @@
-/* Heredamos base de BuscadorLogeado.css */
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('../imgs/fondoBuscador.jpg'); 
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+}
 
 .column-layout {
     flex-direction: column;
@@ -20,11 +29,12 @@
 }
 
 .active-link {
-    color: var(--color-primary) !important;
-    border-bottom: 3px solid var(--color-primary);
+    color: #ffffff !important;
+    background-color: var(--color-primary);
+    border-radius: 4px;
+    border-bottom: none;
 }
 
-/* --- ESTILO TIPO LISTA --- */
 .room-list {
     display: flex;
     flex-direction: column;
@@ -32,13 +42,13 @@
 }
 
 .room-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 160px 1fr;
     border: 1px solid #eee;
     border-radius: 5px;
     overflow: hidden;
     background: #fff;
     transition: box-shadow 0.2s;
-    /* Altura fija para que quede ordenado en lista */
     height: 120px; 
 }
 
@@ -47,17 +57,18 @@
 }
 
 .room-img {
-    width: 160px;       /* Ancho fijo imagen */
-    height: 100%;       /* Ocupa todo el alto */
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: center;
+    display: block;
 }
 
 .room-info {
-    padding: 10px 20px;
-    flex: 1;            /* Ocupa el resto del espacio */
+    padding: 0 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centrado vertical */
+    justify-content: center;
 }
 
 .room-address {
@@ -93,12 +104,9 @@
 
 @media (max-width: 600px) {
     .room-item {
-        flex-direction: column;
+        grid-template-columns: 1fr;
+        grid-template-rows: 180px auto;
         height: auto;
-    }
-    .room-img {
-        width: 100%;
-        height: 180px;
     }
     .room-info {
         padding: 15px;

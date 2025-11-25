@@ -1,8 +1,7 @@
-/* js/BuscadorLogeado.js - VERSIÓN API GOOGLE MAPS */
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. SESIÓN Y HEADER (Igual que antes)
+    // SESIÓN Y HEADER
     const currentUserEmail = sessionStorage.getItem('currentUser');
     if (!currentUserEmail) {
         window.location.href = 'login.html';
@@ -28,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 2. GESTIÓN DE PESTAÑAS
+    // GESTIÓN DE PESTAÑAS
     const tabGenerica = document.getElementById('btn-busqueda-generica');
     const tabGeo = document.getElementById('btn-busqueda-geo');
     const vistaGenerica = document.getElementById('vista-generica');
@@ -48,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 3. BÚSQUEDA GENÉRICA
+    // BÚSQUEDA GENÉRICA
     const formGenerico = document.getElementById('search-form');
     if(formGenerico) {
         const fechaInput = document.getElementById('fecha');
@@ -66,22 +65,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // =========================================================
-    // 4. LÓGICA DE GEOLOCALIZACIÓN CON GOOGLE MAPS API
-    // =========================================================
+    
     
     const formGeo = document.getElementById('geo-form');
     
     if (formGeo) {
-        // Crear contenedor del mapa si no existe
         let mapContainer = document.getElementById('mapa-resultado');
         if (!mapContainer) {
             mapContainer = document.createElement('div');
             mapContainer.id = 'mapa-resultado';
+            mapContainer.style.width = '100%';
+            mapContainer.style.height = '400px';
+            mapContainer.style.marginTop = '20px';
+            mapContainer.style.display = 'none';
+            mapContainer.style.borderRadius = '8px';
             formGeo.parentNode.appendChild(mapContainer);
         }
 
-        // Crear selector de radio si no existe
         let radioSelect = document.getElementById('radio-km');
         if(!radioSelect) {
             const divGroup = document.createElement('div');
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             divGroup.style.marginTop = '10px';
             
             const label = document.createElement('label');
-            label.textContent = 'Radio (Km): ';
+            label.textContent = 'Radio de búsqueda: ';
             
             radioSelect = document.createElement('select');
             radioSelect.id = 'radio-km';
@@ -110,51 +110,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         formGeo.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Verificar si la API de Google ha cargado
             if (typeof google === 'undefined') {
-                alert("La API de Google Maps no ha cargado correctamente. Revisa tu API KEY.");
+                alert("Error: API de Google Maps no cargada.");
                 return;
             }
 
             const direccionInput = document.getElementById('direccion-geo').value;
             const radioKm = parseFloat(document.getElementById('radio-km').value);
-            const radioMetros = radioKm * 1000; // Google usa metros
+            const radioMetros = radioKm * 1000; 
 
-            // 1. Usar Geocoder para obtener coordenadas de la dirección escrita
             const geocoder = new google.maps.Geocoder();
             
             geocoder.geocode({ 'address': direccionInput }, async (results, status) => {
+                
                 if (status === 'OK') {
-                    const centroCoords = results[0].geometry.location; // Objeto LatLng de Google
+                    const centroCoords = results[0].geometry.location;
 
-                    // Mostrar el mapa
                     mapContainer.style.display = 'block';
                     const mapa = new google.maps.Map(mapContainer, {
-                        zoom: 14, // Zoom inicial (ajustable)
+                        zoom: 14, 
                         center: centroCoords
                     });
 
-                    // Marcador de "Tu Ubicación" (Azul si es posible, o por defecto)
                     new google.maps.Marker({
                         map: mapa,
                         position: centroCoords,
-                        title: "Tu búsqueda: " + direccionInput,
-                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Icono azul
+                        title: "Tu búsqueda",
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
                     });
 
-                    // Dibujar círculo del radio (Opcional pero visualmente útil)
                     new google.maps.Circle({
-                        strokeColor: '#FF0000',
+                        strokeColor: '#00CCCC',
                         strokeOpacity: 0.8,
                         strokeWeight: 2,
-                        fillColor: '#FF0000',
-                        fillOpacity: 0.1,
+                        fillColor: '#00CCCC',
+                        fillOpacity: 0.15,
                         map: mapa,
                         center: centroCoords,
                         radius: radioMetros
                     });
 
-                    // 2. Traer habitaciones de IndexedDB y filtrar
                     try {
                         const db = await abrirBD();
                         const tx = db.transaction(['habitacion'], 'readonly');
@@ -165,14 +160,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                             const habitaciones = request.result;
 
                             habitaciones.forEach(hab => {
-                                if (hab.lat && hab.longi) {
-                                    const habCoords = new google.maps.LatLng(hab.lat, hab.longi);
+                                // FILTRO NUEVO: Si soy el dueño, la salto
+                                if (hab.emailPropietario === currentUserEmail) {
+                                    return; 
+                                }
+
+                                //LÓGICA DE COORDENADAS 
+                                const latitud = parseFloat(hab.lat);
+                                const longitud = parseFloat(hab.longi || hab.lon);
+
+                                if (!isNaN(latitud) && !isNaN(longitud)) {
                                     
-                                    // CALCULAR DISTANCIA REAL (Librería Geometry)
+                                    const habCoords = new google.maps.LatLng(latitud, longitud);
                                     const distancia = google.maps.geometry.spherical.computeDistanceBetween(centroCoords, habCoords);
 
                                     if (distancia <= radioMetros) {
-                                        // 3. Crear Marcador para la habitación
+                                        
                                         const marker = new google.maps.Marker({
                                             map: mapa,
                                             position: habCoords,
@@ -180,13 +183,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                                             animation: google.maps.Animation.DROP
                                         });
 
-                                        // 4. InfoWindow (Click para ver precio y fecha)
-                                        // Simulación de fecha fin (o "Disponible" si no tenemos el dato a mano)
                                         const contenidoInfo = `
-                                            <div style="text-align:center">
-                                                <h3 style="margin:0; color:#333;">${hab.direccion}</h3>
-                                                <p style="font-size:1.1rem; font-weight:bold; color:#00cccc;">${hab.precio} €</p>
-                                                <p style="font-size:0.9rem;">Fecha fin: <br><strong>Disponible</strong></p>
+                                            <div style="text-align:center; min-width: 160px; font-family: sans-serif;">
+                                                <h4 style="margin:0 0 5px 0; color:#333;">${hab.direccion}</h4>
+                                                <p style="font-size:1.1rem; font-weight:bold; color:#00cccc; margin:5px 0;">${hab.precio} €</p>
+                                                <a href="habitacion.html?id=${hab.idHabi}" style="display:inline-block; padding:5px 10px; background:#333; color:white; text-decoration:none; border-radius:4px; font-size:0.8rem;">Ver ficha</a>
                                             </div>
                                         `;
 
@@ -202,11 +203,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                             });
                         };
                     } catch (err) {
-                        console.error("Error BD:", err);
+                        console.error("Error leyendo habitaciones:", err);
                     }
 
                 } else {
-                    alert('No se pudo encontrar la dirección: ' + status);
+                    alert('Google Maps no encontró esa dirección.');
                 }
             });
         });

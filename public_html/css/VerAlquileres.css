@@ -1,13 +1,9 @@
-/* css/VerAlquileres.css */
-
-/* Layout general */
 .column-layout {
     flex-direction: column;
     align-items: center;
     padding-top: 30px;
 }
 
-/* Caja contenedora */
 .wide-box {
     width: 100%;
     max-width: 900px;
@@ -26,7 +22,6 @@
     padding-bottom: 10px;
 }
 
-/* Títulos de estado (Activo / Historial) */
 .status-title {
     margin-top: 25px;
     margin-bottom: 15px;
@@ -36,17 +31,15 @@
     padding-left: 10px;
 }
 
-.active-title { border-color: #27ae60; }   /* Borde verde */
-.inactive-title { border-color: #c0392b; } /* Borde rojo */
+.active-title { border-color: #27ae60; }
+.inactive-title { border-color: #c0392b; }
 
-/* Divisor horizontal */
 .divider {
     border: 0;
     border-top: 1px solid #eee;
     margin: 30px 0;
 }
 
-/* --- ESTILOS DE LA TARJETA --- */
 .rental-list {
     display: flex;
     flex-direction: column;
@@ -54,13 +47,14 @@
 }
 
 .rental-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     overflow: hidden;
     background: #fff;
-    align-items: center;
     transition: box-shadow 0.2s;
+    min-height: 110px;
 }
 
 .rental-item:hover {
@@ -68,14 +62,14 @@
 }
 
 .rental-img {
-    width: 110px;
-    height: 90px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: center;
     display: block;
 }
 
 .rental-info {
-    flex: 1;
     padding: 10px 20px;
     display: flex;
     flex-direction: column;
@@ -104,13 +98,15 @@
 .rental-price {
     padding: 0 25px;
     font-weight: bold;
-    color: #00cccc; /* Tu color primario */
+    color: #00cccc;
     font-size: 1.2rem;
     min-width: 100px;
     text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
-/* Mensaje vacío */
 .empty-msg {
     text-align: center;
     color: #999;
@@ -118,4 +114,16 @@
     font-style: italic;
     background: #fdfdfd;
     border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+    .rental-item {
+        grid-template-columns: 1fr;
+        grid-template-rows: 160px auto auto;
+        height: auto;
+    }
+    .rental-price {
+        justify-content: flex-start;
+        padding: 10px 20px;
+    }
 }

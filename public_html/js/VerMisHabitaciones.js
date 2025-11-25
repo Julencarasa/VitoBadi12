@@ -1,17 +1,13 @@
-/**
- * js/VerMisHabitaciones.js
- */
-
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // 1. SEGURIDAD
+    // seguridad
     const currentUserEmail = sessionStorage.getItem('currentUser');
     if (!currentUserEmail) {
         window.location.href = 'login.html';
         return;
     }
 
-    // Header Usuario
+    // header Usuario
     try {
         const usuario = JSON.parse(sessionStorage.getItem(currentUserEmail));
         if (usuario) {
@@ -26,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'BuscadorAnonimo.html';
     });
 
-    // 2. CARGAR HABITACIONES
+    // habitaciones
     try {
         const db = await abrirBD();
         await cargarMisHabitaciones(db, currentUserEmail);

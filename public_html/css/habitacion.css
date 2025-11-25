@@ -1,6 +1,4 @@
-/* =========================================
-   1. RESET Y VARIABLES GLOBALES
-   ========================================= */
+/*RESET Y VARIABLES GLOBALES*/
 :root {
     --color-primary: #00cccc;
     --color-primary-hover: #008b8b;
@@ -69,9 +67,7 @@ body {
     z-index: 10;
 }
 
-/* =========================================
-   3. BOTONES
-   ========================================= */
+/*BOTONES */
 .btn {
     padding: 8px 20px;
     border-radius: 5px;
@@ -109,14 +105,12 @@ body {
     transform: translateY(-2px);
 }
 
-/* =========================================
-   4. LAYOUT PRINCIPAL (Detalle)
-   ========================================= */
+/* LAYOUT PRINCIPAL*/
 .main-content {
     flex: 1; /* Ocupa todo el espacio disponible entre header y footer */
     padding: 40px 20px;
     
-    /* --- CAMBIO 2: CENTRADO PERFECTO --- */
+    /* CENTRADO PERFECTO */
     display: flex;
     justify-content: center; /* Centrado Horizontal */
     align-items: center;     /* Centrado Vertical (Esto baja la caja) */
@@ -147,9 +141,7 @@ body {
     }
 }
 
-/* =========================================
-   5. ZONA IZQUIERDA: IMAGEN
-   ========================================= */
+/* ZONA IZQUIERDA: IMAGEN*/
 .detail-image-box {
     position: relative;
     height: 450px;
@@ -180,9 +172,7 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* =========================================
-   6. ZONA DERECHA: INFORMACIÓN
-   ========================================= */
+/* ZONA DERECHA: INFORMACIÓN*/
 .detail-info-box {
     display: flex;
     flex-direction: column;

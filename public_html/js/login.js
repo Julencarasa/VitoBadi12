@@ -1,5 +1,3 @@
-/* js/login.js */
-
 document.addEventListener('DOMContentLoaded', () => {
 
     const loginForm = document.getElementById('login-form');
@@ -7,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const passInput = document.getElementById('password');
     const errorMsgDiv = document.getElementById('error-message');
 
-    // --- 1. VALIDACIÓN EN TIEMPO REAL ---
+    //validacion
 
     crearMensajeError(emailInput, 'Formato de email inválido (ej: usuario@dominio.com)');
     crearMensajeError(passInput, 'La contraseña no puede estar vacía');
@@ -29,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 2. LÓGICA DEL LOGIN ---
+    // logica login
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         errorMsgDiv.textContent = ""; 
@@ -53,23 +51,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const usuario = request.result;
 
                 if (usuario) {
-                    // El usuario existe, comprobamos contraseña
+                    //comprobamos contraseña
                     if (usuario.password === password) {
-                        // --- LOGIN CORRECTO ---
                         
-                        // 1. Guardar sesión (ESTO ES LO QUE DABA ERROR ANTES, AHORA ESTÁ LIMPIO)
+                        
+                        //guarda sesion
                         sessionStorage.setItem('currentUser', email);
                         sessionStorage.setItem(email, JSON.stringify(usuario));
 
-                        // 2. Redirección Inteligente
-                        // Si venía de intentar ver una habitación, lo devolvemos allí
+                        
+                        // si venía de intentar ver una habitación, lo devolvemos allí
                         const destino = sessionStorage.getItem('destinoPendiente');
                         
                         if (destino) {
                             sessionStorage.removeItem('destinoPendiente'); 
                             window.location.href = destino;
                         } else {
-                            // Si es un login normal, al buscador
+                            // si es un login normal, buscador
                             window.location.href = 'BuscadorLogeado.html';
                         }
 
@@ -93,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* --- FUNCIONES AUXILIARES --- */
+    //funciones auxiliares
     function crearMensajeError(input, texto) {
         const msg = document.createElement('small');
         msg.className = 'msg-error-text'; 

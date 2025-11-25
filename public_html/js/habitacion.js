@@ -1,7 +1,3 @@
-/**
- * js/habitacion.js
- * Gestiona el detalle de la habitación y la lógica de solicitudes.
- */
 document.addEventListener('DOMContentLoaded', async () => {
     
     // --- 1. REFERENCIAS AL DOM ---
