@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const greeting = document.getElementById('user-greeting');
     const photo = document.getElementById('user-photo');
     if (usuario) {
-        greeting.textContent = `Bienvenido, ${usuario.nombre}`;
+        greeting.textContent = `Hola, ${usuario.nombre}`;
         if (usuario.foto) photo.src = usuario.foto;
     }
     
@@ -190,7 +190,7 @@ async function abrirModal(db, solicitudes) {
             const row = document.createElement('div');
             row.className = 'candidate-row';
             row.innerHTML = `
-                <img src="${usuario.foto || 'imgs/user_placeholder.png'}" class="candidate-avatar">
+                <img src="${usuario.foto || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAk0lEQVRYw+3Vyw2AMAwE0E/6704qIFAkK0s2WbB/C/a2BDRxV0q5jG3q/X0bV/v5tG/j1n487du43Y+neRsP9+Np3sbj/Xiat/F8P57mbXzcj6d5G9/342nexg/9eJq38VM/nuZt/NyPp3kbv/fjad7G7/14mrfxfz+e5m3834+neRv/9+Np3sb//Xiat/F/P57mbfzfj6d5Gz8A829B5dOFwMcAAAAASUVORK5CYII='}" class="candidate-avatar">
                 <div>
                     <div style="font-weight:bold;">${usuario.nombre}</div>
                     <div style="font-size:0.85rem; color:#666;">${usuario.email}</div>

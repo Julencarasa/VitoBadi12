@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const usuario = JSON.parse(sessionStorage.getItem(currentUserEmail));
         if (usuario) {
-            document.getElementById('user-greeting').textContent = `Bienvenido, ${usuario.nombre}`;
+            document.getElementById('user-greeting').textContent = `Hola, ${usuario.nombre}`;
             if (usuario.foto) document.getElementById('user-photo').src = usuario.foto;
         }
     } catch(e){}
