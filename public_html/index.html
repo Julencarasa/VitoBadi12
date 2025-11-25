@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<!--Este html es un clon de buscador anonimo para que firebase funcione correctamente-->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Habitación - VitoBadi</title>
+    <link rel="stylesheet" href="css/BuscadorAnonimo.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="header-title">
+                <a href="BuscadorAnonimo.html">
+                    <img src="imgs/VitoBadi Logo.png" alt="VitoBadi" class="header-logo-img">
+                </a>
+            </h1>
+            <nav class="header-nav">
+                <a href="Login.html" class="btn btn-outline">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        
+        <section class="card-box search-box-width">
+            <h2>Buscar Habitación</h2>
+            
+            <form id="search-form" class="form-inline">
+                
+                <div class="form-group">
+                    <label for="ciudad">Ciudad:</label>
+                    <select id="ciudad" name="ciudad" required>
+                        <option value="">Selecciona una ciudad</option>
+                        <option value="Vitoria">Vitoria</option>
+                        <option value="Bilbao">Bilbao</option>
+                        <option value="Donostia">Donostia</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fecha">Fecha entrada:</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </form>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><b>Hector Carrera y Julen Carasa</b> &copy; 2025</p>
+        </div>
+    </footer>
+
+    <script src="js/vitobadi12.js"></script>
+<script src="js/BuscadorAnonimo.js"></script>
+</body>
+</html>
