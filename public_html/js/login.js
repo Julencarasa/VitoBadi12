@@ -7,13 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const passInput = document.getElementById('password');
     const errorMsgDiv = document.getElementById('error-message');
 
-    // --- 1. CONFIGURACIÓN DE VALIDACIÓN EN TIEMPO REAL ---
+    // --- 1. VALIDACIÓN EN TIEMPO REAL ---
 
-    // Crear los huecos para los mensajes de error
     crearMensajeError(emailInput, 'Formato de email inválido (ej: usuario@dominio.com)');
     crearMensajeError(passInput, 'La contraseña no puede estar vacía');
 
-    // Evento INPUT para el Email
     emailInput.addEventListener('input', () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (emailRegex.test(emailInput.value)) {
@@ -23,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Evento INPUT para la Contraseña
     passInput.addEventListener('input', () => {
         if (passInput.value.trim().length > 0) {
             setValido(passInput);
@@ -32,15 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 2. LÓGICA DEL FORMULARIO (SUBMIT) ---
+    // --- 2. LÓGICA DEL LOGIN ---
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        errorMsgDiv.textContent = ""; // Limpiar errores previos
+        errorMsgDiv.textContent = ""; 
 
         const email = emailInput.value.trim();
         const password = passInput.value.trim();
 
-        // Validación final antes de enviar
         if (!email || !password) {
             errorMsgDiv.textContent = "Por favor, rellena todos los campos.";
             return;
@@ -51,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const tx = db.transaction(['usuario'], 'readonly');
             const store = tx.objectStore('usuario');
             
-            // Buscamos al usuario por su email (que es la clave)
             const request = store.get(email);
 
             request.onsuccess = () => {
@@ -60,13 +55,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (usuario) {
                     // El usuario existe, comprobamos contraseña
                     if (usuario.password === password) {
-                        // LOGIN CORRECTO
-                        [cite_start]// Guardamos sesión [cite: 55]
+                        // --- LOGIN CORRECTO ---
+                        
+                        // 1. Guardar sesión (ESTO ES LO QUE DABA ERROR ANTES, AHORA ESTÁ LIMPIO)
                         sessionStorage.setItem('currentUser', email);
                         sessionStorage.setItem(email, JSON.stringify(usuario));
 
-                        // Redirigir
-                        window.location.href = 'BuscadorLogeado.html';
+                        // 2. Redirección Inteligente
+                        // Si venía de intentar ver una habitación, lo devolvemos allí
+                        const destino = sessionStorage.getItem('destinoPendiente');
+                        
+                        if (destino) {
+                            sessionStorage.removeItem('destinoPendiente'); 
+                            window.location.href = destino;
+                        } else {
+                            // Si es un login normal, al buscador
+                            window.location.href = 'BuscadorLogeado.html';
+                        }
+
                     } else {
                         errorMsgDiv.textContent = "Contraseña incorrecta.";
                         setInvalido(passInput);
@@ -83,14 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error(error);
-            errorMsgDiv.textContent = "Error inesperado.";
+            errorMsgDiv.textContent = "Error inesperado (Revisa si vitobadi12.js está cargado).";
         }
     });
 
-    /* --- FUNCIONES AUXILIARES DE VALIDACIÓN VISUAL --- */
+    /* --- FUNCIONES AUXILIARES --- */
     function crearMensajeError(input, texto) {
         const msg = document.createElement('small');
-        msg.className = 'msg-error-text'; // Clase definida en CSS
+        msg.className = 'msg-error-text'; 
         msg.textContent = texto;
         input.parentNode.appendChild(msg);
     }

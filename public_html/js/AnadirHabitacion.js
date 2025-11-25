@@ -1,4 +1,4 @@
-/* js/AnadirHabitacion.js */
+/* js/AnadirHabitacion.js - VERSIÓN GOOGLE MAPS API */
 
 document.addEventListener('DOMContentLoaded', async () => {
     
@@ -28,37 +28,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 3. REFERENCIAS Y VALIDACIÓN EN TIEMPO REAL
+    // 3. REFERENCIAS DEL FORMULARIO
     const inputDireccion = document.getElementById('direccion');
     const inputPrecio = document.getElementById('precio');
     const form = document.getElementById('form-anadir');
     const errorMsg = document.getElementById('error-msg');
 
-    // Crear mensajes de error
-    crearMensajeError(inputDireccion, 'La dirección debe tener al menos 3 caracteres');
-    crearMensajeError(inputPrecio, 'El precio debe ser un número positivo');
-
-    // Validar Dirección
-    inputDireccion.addEventListener('input', () => {
-        if (inputDireccion.value.trim().length >= 3) {
-            setValido(inputDireccion);
-        } else {
-            setInvalido(inputDireccion);
-        }
-    });
-
-    // Validar Precio
-    inputPrecio.addEventListener('input', () => {
-        const val = parseFloat(inputPrecio.value);
-        if (val > 0) {
-            setValido(inputPrecio);
-        } else {
-            setInvalido(inputPrecio);
-        }
-    });
-
-
-    // 4. LÓGICA DRAG AND DROP (FOTO)
+    // 4. LÓGICA DRAG AND DROP (FOTO) - (Sin cambios, funciona bien)
     const dropZone = document.getElementById('drop-zone');
     const inputFoto = document.getElementById('input-foto');
     const previewImg = document.getElementById('preview-img');
@@ -67,35 +43,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     dropZone.addEventListener('click', () => inputFoto.click());
 
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        });
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+        dropZone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); });
     });
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'));
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'));
-    });
+    ['dragenter', 'dragover'].forEach(evt => dropZone.addEventListener(evt, () => dropZone.classList.add('dragover')));
+    ['dragleave', 'drop'].forEach(evt => dropZone.addEventListener(evt, () => dropZone.classList.remove('dragover')));
 
     dropZone.addEventListener('drop', (e) => {
-        const files = e.dataTransfer.files;
-        if (files.length > 0) handleFile(files[0]);
+        if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
     });
 
-    inputFoto.addEventListener('change', (e) => {
+    inputFoto.addEventListener('change', () => {
         if (inputFoto.files.length > 0) handleFile(inputFoto.files[0]);
     });
 
     function handleFile(file) {
-        if (!file.type.startsWith('image/')) {
-            alert("Solo se permiten imágenes.");
-            return;
-        }
+        if (!file.type.startsWith('image/')) return alert("Solo imágenes.");
         const reader = new FileReader();
         reader.onload = (e) => {
             fotoBase64 = e.target.result;
@@ -106,86 +69,141 @@ document.addEventListener('DOMContentLoaded', async () => {
         reader.readAsDataURL(file);
     }
 
-
-    // 5. ENVÍO DEL FORMULARIO
-    form.addEventListener('submit', async (e) => {
+    // 5. ENVÍO DEL FORMULARIO CON GOOGLE MAPS
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
         errorMsg.textContent = "";
 
-        const direccion = inputDireccion.value.trim();
+        const direccionTexto = inputDireccion.value.trim();
         const precio = parseInt(inputPrecio.value);
 
-        // Validaciones finales
-        if (!direccion || direccion.length < 3) {
-            errorMsg.textContent = "Dirección incorrecta.";
-            setInvalido(inputDireccion);
-            return;
-        }
-        if (!precio || precio <= 0) {
-            errorMsg.textContent = "Precio incorrecto.";
-            setInvalido(inputPrecio);
-            return;
-        }
-        if (!fotoBase64) {
-            errorMsg.textContent = "Debes subir una foto.";
-            return;
-        }
+        // --- Validaciones iniciales ---
+        if (!direccionTexto || direccionTexto.length < 3) return mostrarError("La dirección es demasiado corta.");
+        if (!precio || precio <= 0) return mostrarError("El precio debe ser mayor que 0.");
+        if (!fotoBase64) return mostrarError("Debes subir una foto de la habitación.");
 
-        try {
-            const db = await abrirBD();
-            const tx = db.transaction(['habitacion'], 'readwrite');
-            const store = tx.objectStore('habitacion');
+        // Bloqueamos el botón para dar feedback visual
+        const btnSubmit = form.querySelector('button[type="submit"]');
+        const textoOriginalBtn = btnSubmit.textContent;
+        btnSubmit.textContent = "Consultando Google Maps...";
+        btnSubmit.disabled = true;
 
-            // ID único basado en fecha
-            const nuevoId = Date.now();
+        // --- LLAMADA A LA API DE GOOGLE MAPS (GEOCODER) ---
+        const geocoder = new google.maps.Geocoder();
 
-            // Simulación de coordenadas (Lat/Lon)
-            const latMock = (42.8 + Math.random() * 0.1).toFixed(6);
-            const lonMock = (-2.6 + Math.random() * 0.1).toFixed(6);
+        geocoder.geocode({ 'address': direccionTexto }, async (results, status) => {
+            
+            if (status === 'OK') {
+                // Google encontró la dirección
+                const resultado = results[0];
+                
+                // A) Obtener Coordenadas
+                const latitudFinal = resultado.geometry.location.lat();
+                const longitudFinal = resultado.geometry.location.lng();
+                
+                // B) Detectar Ciudad
+                // Google devuelve la dirección desglosada en 'address_components'.
+                // Buscamos el componente que sea de tipo 'locality' (ciudad).
+                let ciudadGoogle = "";
+                const comp = resultado.address_components;
+                
+                for(let i=0; i < comp.length; i++) {
+                    if (comp[i].types.includes("locality")) {
+                        ciudadGoogle = comp[i].long_name;
+                        break;
+                    }
+                }
+                // Si no encuentra 'locality' (a veces pasa en pueblos o áreas grandes), 
+                // buscamos 'administrative_area_level_2' (provincia) como fallback.
+                if(!ciudadGoogle) {
+                     for(let i=0; i < comp.length; i++) {
+                        if (comp[i].types.includes("administrative_area_level_2")) {
+                            ciudadGoogle = comp[i].long_name;
+                            break;
+                        }
+                    }
+                }
 
-            const nuevaHabitacion = {
-                idHabi: nuevoId,
-                direccion: direccion,
-                precio: precio,
-                imagen: fotoBase64,
-                lat: parseFloat(latMock),
-                longi: parseFloat(lonMock),
-                emailPropietario: currentUserEmail,
-                descripcion: "Habitación en " + direccion
-            };
+                // C) Validar si la ciudad es una de las permitidas
+                let ciudadFinal = null;
+                if (ciudadGoogle.includes("Vitoria") || ciudadGoogle.includes("Gasteiz")) ciudadFinal = "Vitoria";
+                else if (ciudadGoogle.includes("Bilbao")) ciudadFinal = "Bilbao";
+                else if (ciudadGoogle.includes("Donostia") || ciudadGoogle.includes("Sebastián")) ciudadFinal = "Donostia";
 
-            const request = store.add(nuevaHabitacion);
+                if (!ciudadFinal) {
+                    restaurarBoton();
+                    return mostrarError(`Ubicación detectada: ${ciudadGoogle}. Solo operamos en Vitoria, Bilbao o Donostia.`);
+                }
 
-            request.onsuccess = () => {
-                alert("¡Habitación publicada con éxito!");
-                window.location.href = "VerMisHabitaciones.html";
-            };
+                // D) Guardar en IndexedDB
+                try {
+                    const db = await abrirBD();
+                    // Transacción de escritura
+                    const tx = db.transaction(['habitacion'], 'readwrite');
+                    const store = tx.objectStore('habitacion');
 
-            request.onerror = () => {
-                errorMsg.textContent = "Error guardando en BD.";
-            };
+                    // 1. Calcular ID Autoincremental (Máximo actual + 1)
+                    const reqKeys = store.getAllKeys();
+                    
+                    reqKeys.onsuccess = () => {
+                        const keys = reqKeys.result;
+                        let nuevoId = 1;
+                        if (keys.length > 0) {
+                            nuevoId = Math.max(...keys) + 1;
+                        }
 
-        } catch (err) {
-            console.error(err);
-            errorMsg.textContent = "Error de sistema.";
+                        // Usamos la dirección "bonita" que nos devuelve Google (ej: "Calle Dato, 1")
+                        // Cogemos solo la parte antes de la primera coma para que no sea larguísima
+                        const direccionBonita = resultado.formatted_address.split(',')[0];
+
+                        const nuevaHabitacion = {
+                            idHabi: nuevoId,
+                            direccion: direccionBonita, 
+                            ciudad: ciudadFinal,
+                            precio: precio,
+                            imagen: fotoBase64,
+                            lat: latitudFinal,
+                            lon: longitudFinal,
+                            longi: longitudFinal, // Guardamos ambos nombres por compatibilidad
+                            emailPropietario: currentUserEmail,
+                            descripcion: "Habitación en " + ciudadFinal
+                        };
+
+                        store.add(nuevaHabitacion);
+                    };
+
+                    // 2. Esperar a que termine la transacción (CRUCIAL para que se guarde bien)
+                    tx.oncomplete = () => {
+                        alert(`¡Guardado con éxito!\nUbicación: ${ciudadFinal}`);
+                        window.location.href = "VerMisHabitaciones.html";
+                    };
+                    
+                    tx.onerror = (ev) => { 
+                        console.error(ev);
+                        mostrarError("Error al guardar en la base de datos."); 
+                        restaurarBoton(); 
+                    };
+
+                } catch (err) {
+                    console.error(err);
+                    mostrarError("Error de conexión con la base de datos.");
+                    restaurarBoton();
+                }
+
+            } else {
+                // Google devolvió error (ZERO_RESULTS, REQUEST_DENIED, etc.)
+                restaurarBoton();
+                mostrarError('Google no encontró la dirección. Intenta ser más específico (ej: Calle Dato 1, Vitoria). Estado: ' + status);
+            }
+        });
+
+        function restaurarBoton() {
+            btnSubmit.textContent = "Aceptar";
+            btnSubmit.disabled = false;
         }
     });
 
-    /* --- FUNCIONES AUXILIARES DE VALIDACIÓN --- */
-    function crearMensajeError(input, texto) {
-        const msg = document.createElement('small');
-        msg.className = 'msg-error-text';
-        msg.textContent = texto;
-        input.parentNode.appendChild(msg);
-    }
-
-    function setValido(input) {
-        input.classList.remove('input-error');
-        input.classList.add('input-success');
-    }
-
-    function setInvalido(input) {
-        input.classList.remove('input-success');
-        input.classList.add('input-error');
+    function mostrarError(texto) {
+        errorMsg.textContent = texto;
     }
 });
