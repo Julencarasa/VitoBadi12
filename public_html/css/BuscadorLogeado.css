@@ -1,13 +1,10 @@
 /* css/BuscadorLogeado.css */
-
 :root {
     --color-primary: #00cccc;
     --color-primary-hover: #008b8b;
     --color-bg: #f8f9fa;
     --color-text: #333;
     --border-radius: 5px;
-    --nav-bg: #ffffff;
-    --nav-hover: #f0fdfd;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,201 +18,88 @@ body {
     min-height: 100vh;
 }
 
-/* =========================================
-   1. HEADER PRINCIPAL
-   ========================================= */
-.header { 
-    background: white; 
-    padding: 10px 0; 
-    border-bottom: 1px solid #eee;
-}
+/* --- Header --- */
+.header { background: white; padding: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.header-content { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+.header-title a { text-decoration: none; }
+.header-logo-img { height: 50px; width: auto; }
 
-.header-content { 
-    width: 100%; 
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 0 20px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-}
+/* --- User Nav --- */
+.user-nav { display: flex; align-items: center; gap: 15px; }
+.user-info { display: flex; align-items: center; gap: 10px; font-weight: bold; color: #555; }
+.profile-pic { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-primary); }
+#btn-logout { font-size: 0.9rem; padding: 5px 12px; }
 
-.header-logo-img { height: 50px; width: auto; display: block; }
-
-/* Usuario y Logout */
-.user-nav { display: flex; align-items: center; gap: 20px; }
-
-.user-info { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #555; }
-
-.profile-pic {
-    width: 40px; 
-    height: 40px; 
-    border-radius: 50%; 
-    object-fit: cover;
-    border: 2px solid var(--color-primary);
-}
-
-/* =========================================
-   2. SUB-HEADER & DROPDOWNS (NUEVO)
-   ========================================= */
-.sub-header {
-    background-color: var(--nav-bg);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    position: relative;
-    z-index: 100; /* Para que los desplegables floten sobre el contenido */
-}
-
-.nav-menu {
-    list-style: none;
-    display: flex;
-    justify-content: center; /* Menú centrado */
-    gap: 30px;
-    padding: 0;
-    margin: 0;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Items del menú */
+/* --- Sub-Header (Navigation Menu) --- */
+.sub-header { background-color: #333; width: 100%; }
+.nav-menu { list-style: none; display: flex; justify-content: center; max-width: 1200px; margin: 0 auto; }
 .nav-item { position: relative; }
+.nav-link { display: block; padding: 15px 20px; color: white; text-decoration: none; font-weight: 500; transition: background 0.3s; }
+.nav-link:hover, .active-link { background-color: var(--color-primary); }
 
-/* Enlaces del menú */
-.nav-link {
-    display: block;
-    padding: 15px 20px;
-    text-decoration: none;
-    color: #555;
-    font-weight: 600;
-    transition: color 0.3s;
-    border-bottom: 3px solid transparent; /* Línea invisible */
-}
+/* Dropdown Menu */
+.dropdown-content { display: none; position: absolute; background-color: white; min-width: 200px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); z-index: 100; top: 100%; left: 0; border-radius: 0 0 5px 5px; }
+.dropdown-content a { color: black; padding: 12px 16px; text-decoration: none; display: block; font-size: 0.95rem; border-bottom: 1px solid #eee; }
+.dropdown-content a:last-child { border-bottom: none; }
+.dropdown-content a:hover { background-color: #f1f1f1; color: var(--color-primary); }
+.dropdown:hover .dropdown-content { display: block; }
 
-.nav-link:hover {
-    color: var(--color-primary);
-    background-color: var(--nav-hover);
-    border-bottom: 3px solid var(--color-primary);
-}
-
-/* --- MENÚ DESPLEGABLE (DROPDOWN) --- */
-.dropdown-content {
-    display: none; /* Oculto por defecto */
-    position: absolute;
-    top: 100%; /* Justo debajo del botón */
-    left: 0;
-    background-color: #ffffff;
-    min-width: 200px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    border-radius: 0 0 5px 5px;
-    z-index: 200;
-    border-top: 2px solid var(--color-primary);
-}
-
-/* Mostrar al pasar el ratón (Hover) */
-.nav-item:hover .dropdown-content {
-    display: block;
-    animation: fadeIn 0.3s;
-}
-
-/* Enlaces dentro del desplegable */
-.dropdown-content a {
-    color: #333;
-    padding: 12px 20px;
-    text-decoration: none;
-    display: block;
-    font-size: 0.95rem;
-    transition: background 0.2s;
-}
-
-.dropdown-content a:hover {
-    background-color: var(--nav-hover);
-    color: var(--color-primary);
-}
-
-/* Animación suave */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-
-/* =========================================
-   3. CONTENIDO PRINCIPAL
-   ========================================= */
+/* --- Main Content --- */
 .main-content {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: center; /* Centrado vertical solo si hay espacio */
     background-image: url('../imgs/fondoBuscador.jpg');
     background-size: cover;
     background-position: center;
-    padding: 20px;
+    padding: 40px 20px;
 }
 
+/* --- Card Box (Caja Blanca) --- */
 .card-box {
     background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
+    padding: 30px;
     border-radius: var(--border-radius);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     text-align: center;
-    width: 100%;
-    max-width: 800px;
-    /* Animación al aparecer */
-    animation: slideUp 0.5s ease-out;
+    margin-bottom: 20px;
 }
+.search-box-width { width: 100%; max-width: 800px; }
+.card-box h2 { margin-bottom: 20px; color: #2c3e50; }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.card-box h2 { margin-bottom: 25px; color: #2c3e50; font-size: 2rem; }
-
-/* Formulario Genérico */
+/* --- Forms --- */
 .form-inline { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: center; }
-.form-group { flex: 1; min-width: 200px; text-align: left; }
-.form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #444; }
-.form-group input, .form-group select { 
-    width: 100%; 
-    padding: 12px; 
-    border: 1px solid #ddd; 
-    border-radius: var(--border-radius); 
-    font-size: 1rem; 
-}
+.form-geo { display: flex; flex-direction: column; align-items: center; gap: 15px; max-width: 600px; margin: 0 auto; }
 
-/* Formulario Geolocalización */
-.form-geo { display: flex; flex-direction: column; align-items: center; max-width: 500px; margin: 0 auto; }
+.form-group { flex: 1; min-width: 200px; text-align: left; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+.form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: var(--border-radius); font-size: 1rem; }
 
 /* Botones */
-.btn { border-radius: var(--border-radius); text-decoration: none; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; display: inline-block;}
-.btn-primary { background-color: var(--color-primary); color: white; height: 48px; padding: 0 30px; font-size: 1rem; margin-bottom: 1px;}
-.btn-primary:hover { background-color: var(--color-primary-hover); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-
-.btn-sm { padding: 6px 15px; font-size: 0.85rem; }
+.btn { border-radius: var(--border-radius); text-decoration: none; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; }
+.btn-primary { background-color: var(--color-primary); color: white; height: 45px; padding: 0 25px; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; }
+.btn-primary:hover { background-color: var(--color-primary-hover); }
 .btn-outline { background: transparent; border: 1px solid #dc3545; color: #dc3545; }
 .btn-outline:hover { background: #dc3545; color: white; }
+.btn-sm { height: auto; padding: 5px 10px; font-size: 0.8rem; }
 
+/* Footer */
 .footer { background: #333; color: white; text-align: center; padding: 15px; margin-top: auto; }
-/* Estilos para validación en tiempo real */
-.input-error {
-    border: 2px solid #e74c3c !important; /* Rojo */
-    background-color: #fadbd8 !important;
+
+/* --- MAPA GOOGLE (NUEVO) --- */
+#mapa-resultado {
+    width: 100%;
+    height: 400px;
+    margin-top: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: none; /* Se oculta hasta que buscas */
 }
 
-.input-success {
-    border: 2px solid #2ecc71 !important; /* Verde */
-    background-color: #eafaf1 !important;
-}
-
-.msg-error-text {
-    color: #e74c3c;
-    font-size: 0.85rem;
-    margin-top: 4px;
-    display: none; /* Oculto por defecto */
-    font-weight: bold;
-}
-
-/* Mostrar mensaje si el input anterior tiene error */
-.input-error + .msg-error-text {
-    display: block;
-}
+/* Validaciones en tiempo real */
+.input-error { border: 2px solid #e74c3c !important; background-color: #fadbd8 !important; }
+.input-success { border: 2px solid #2ecc71 !important; background-color: #eafaf1 !important; }
+.msg-error-text { color: #e74c3c; font-size: 0.85rem; margin-top: 4px; display: none; font-weight: bold; text-align: left; }
+.input-error + .msg-error-text { display: block; }
