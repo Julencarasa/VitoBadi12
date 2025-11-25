@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // SEGURIDAD
     const currentUserEmail = sessionStorage.getItem('currentUser');
     if (!currentUserEmail) {
-        window.location.href = 'login.html';
+        window.location.href = 'Login.html';
         return;
     }
 

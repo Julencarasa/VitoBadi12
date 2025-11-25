@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
    
     // Buscamos el botón que lleva al login en la barra de navegación
-    const btnLoginHeader = document.querySelector('.header-nav a[href="login.html"]');
+    const btnLoginHeader = document.querySelector('.header-nav a[href="Login.html"]');
     
     if (btnLoginHeader) {
         btnLoginHeader.addEventListener('click', (e) => {
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             sessionStorage.setItem('destinoPendiente', destinoVIP);
             
             // Nos vamos al login
-            window.location.href = 'login.html';
+            window.location.href = 'Login.html';
         });
     }
     /* =========================================================== */
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Queremos ver el detalle de esta habitación concreta
                 const destinoDetalle = `habitacion.html?id=${hab.idHabi}`;
                 sessionStorage.setItem('destinoPendiente', destinoDetalle);
-                window.location.href = 'login.html';
+                window.location.href = 'Login.html';
             });
 
             // Imagen (placeholder si falla)

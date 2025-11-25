@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "vitobadi12"
-  }
+    "default": "vitobadi12-984b1"
+  },
+  "targets": {},
+  "etags": {}
 }
